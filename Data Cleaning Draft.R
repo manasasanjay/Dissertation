@@ -217,12 +217,129 @@ ess1_hua <- ess1_hua %>%
     TRUE ~ NA
   ))
 
+ess1_iea <- ess1_iea %>%
+  mutate(reg_code = case_when(
+    regionie == 1 ~ "IE011", 
+    regionie == 2 ~ "IE012", 
+    regionie == 3 ~ "IE013", 
+    regionie == 4 ~ "IE021", 
+    regionie == 5 ~ "IE022", 
+    regionie == 6 ~ "IE023", 
+    regionie == 7 ~ "IE024", 
+    regionie == 8 ~ "IE025", 
+    TRUE ~ NA
+  ))
+
+ess1_nla <- ess1_nla %>%
+  mutate(reg_code = case_when(
+    regionnl == 111 ~ "NL111", 
+    regionnl == 112 ~ "NL112", 
+    regionnl == 113 ~ "NL113", 
+    regionnl == 121 ~ "NL121", 
+    regionnl == 122 ~ "NL122", 
+    regionnl == 123 ~ "NL123", 
+    regionnl == 131 ~ "NL131", 
+    regionnl == 132 ~ "NL132", 
+    regionnl == 133 ~ "NL133", 
+    regionnl == 211 ~ "NL211", 
+    regionnl == 212 ~ "NL212", 
+    regionnl == 213 ~ "NL213", 
+    regionnl == 221 ~ "NL221", 
+    regionnl == 222 ~ "NL222", 
+    regionnl == 223 ~ "NL223", 
+    regionnl == 224 ~ "NL224", 
+    regionnl == 230 ~ "NL230", 
+    regionnl == 310 ~ "NL310", 
+    regionnl == 321 ~ "NL321", 
+    regionnl == 322 ~ "NL322", 
+    regionnl == 323 ~ "NL323", 
+    regionnl == 324 ~ "NL324", 
+    regionnl == 325 ~ "NL325", 
+    regionnl == 326 ~ "NL326", 
+    regionnl == 327 ~ "NL327", 
+    regionnl == 331 ~ "NL331", 
+    regionnl == 332 ~ "NL332", 
+    regionnl == 333 ~ "NL333", 
+    regionnl == 334 ~ "NL334", 
+    regionnl == 335 ~ "NL335", 
+    regionnl == 336 ~ "NL336", 
+    regionnl == 341 ~ "NL341", 
+    regionnl == 342 ~ "NL342", 
+    regionnl == 411 ~ "NL411", 
+    regionnl == 412 ~ "NL412", 
+    regionnl == 413 ~ "NL413", 
+    regionnl == 414 ~ "NL414", 
+    regionnl == 421 ~ "NL421", 
+    regionnl == 422 ~ "NL422", 
+    regionnl == 423 ~ "NL423", 
+    TRUE ~ NA
+  ))
+
+#Norway 
+ess1_noa <- ess1_noa %>%
+  mutate(reg_code = case_when(
+    regionno == 1 ~ "NO01", 
+    regionno == 2 ~ "NO02", 
+    regionno == 3 ~ "NO03", 
+    regionno == 4 ~ "NO04", 
+    regionno == 5 ~ "NO05", 
+    regionno == 6 ~ "NO06", 
+    regionno == 7 ~ "NO07", 
+    TRUE ~ NA
+  ))
 
 
+#Poland 
+ess1_pla <- ess1_pla %>%
+  mutate(reg_code = case_when(
+    regionpl == 2 ~ "PL51", 
+    regionpl == 4 ~ "PL61", 
+    regionpl == 6 ~ "PL31", 
+    regionpl == 8 ~ "PL43", 
+    regionpl == 10 ~ "PL71", 
+    regionpl == 12 ~ "PL21", 
+    regionpl == 14 ~ "PL12", 
+    regionpl == 16 ~ "PL52", 
+    regionpl == 18 ~ "PL32", 
+    regionpl == 20 ~ "PL34", 
+    regionpl == 22 ~ "PL63", 
+    regionpl == 24 ~ "PL22", 
+    regionpl == 26 ~ "PL33", 
+    regionpl == 28 ~ "PL62", 
+    regionpl == 30 ~ "PL41", 
+    regionpl == 32 ~ "PL42", 
+    TRUE ~ NA
+  ))
 
+#Portugal 
+ess1_pta <- ess1_pta %>% 
+  mutate(reg_code = case_when(
+    regionpt == 1 ~ "PT11", 
+    regionpt == 2 ~ "PT16", 
+    regionpt == 3 ~ "PT17", 
+    regionpt == 4 ~ "PT18", 
+    regionpt == 5 ~ "PT15", 
+    TRUE ~ NA
+  ))
 
+#Sweden 
+ess1_sea <-ess1_sea %>%
+  mutate(reg_code = case_when(
+    regionse == 1 ~ "SE11", 
+    regionse == 2 ~ "SE12", 
+    regionse == 3 ~ "SE22", 
+    regionse == 4 ~ "SE31", 
+    regionse == 5 ~ "SE32", 
+    regionse == 6 ~ "SE33", 
+    regionse == 7 ~ "SE21", 
+    regionse == 8 ~ "SE23", 
+    TRUE ~ NA
+  ))
 
-
+#put it all into one dataset 
+ess1_a_full <- rbind(ess1_ata, ess1_cha, ess1_cza, ess1_dka, ess1_esa, ess1_fra, 
+                     ess1_hua, ess1_iea, ess1_nla, ess1_noa, ess1_pla, ess1_pta, 
+                     ess1_sea)
 
 
 
