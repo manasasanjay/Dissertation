@@ -8,9 +8,9 @@ ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
 #load census data for each country 
 austria_1 <- read_excel("Desktop/PPE/DISS/Austria_2001_Census.xlsx")
 
-czechia_1 <- read_excel("Desktop/PPE/DISS/Czechia_2001_Census.xlsx")
+czechia_1 <- read_excel("Desktop/PPE/DISS/Czechia_2001_Censusb.xlsx")
 
-denmark_1 <- read_excel("Desktop/PPE/DISS/Denmark_2001_Census.xlsx")
+denmark_1 <- read_excel("Desktop/PPE/DISS/Denmark_2001_Censusb.xlsx")
 
 finland_1 <- read_excel("Desktop/PPE/DISS/Finland_2001_Census.xlsx")
 
@@ -18,9 +18,9 @@ france_1 <- read_excel("Desktop/PPE/DISS/France_2001_Census.xlsx")
 
 hungary_1 <- read_excel("Desktop/PPE/DISS/Hungary_2001_Census.xlsx")
 
-ireland_1 <- read_excel("Desktop/PPE/DISS/Ireland_2001_Census.xlsx")
+ireland_1 <- read_excel("Desktop/PPE/DISS/Ireland_2001_Censusb.xlsx")
 
-netherlands_1 <- read_excel("Desktop/PPE/DISS/Netherlands_2001_Census.xlsx")
+netherlands_1 <- read_excel("Desktop/PPE/DISS/Netherlands_2001_Censusb.xlsx")
 
 norway_1 <- read_excel("Desktop/PPE/DISS/Norway_2001_Census.xlsx")
 
@@ -90,6 +90,140 @@ ess1_pta <- ess1[ess1$cntry == "PT", ]
 
 #Sweden 
 ess1_sea <- ess1[ess1$cntry == "SE", ]
+
+#assign region codes to each country (each individual dataset)
+
+#Austria 
+
+ess1_ata <- ess1_ata %>% 
+  mutate(reg_code = case_when(
+    regionat == 1 ~ "AT11", 
+    regionat == 2 ~ "AT21",
+    regionat == 3 ~ "AT12",
+    regionat == 4 ~ "AT31",
+    regionat == 5 ~ "AT32", 
+    regionat == 6 ~ "AT22", 
+    regionat == 7 ~ "AT33", 
+    regionat == 8 ~ "AT34", 
+    regionat == 9 ~ "AT13", 
+    TRUE ~ NA))
+
+#Switzerland 
+ess1_cha <- ess1_cha %>%
+  mutate(reg_code = case_when(
+    regioach == 1 ~ "CH01", 
+    regioach == 2 ~ "CH02", 
+    regioach == 3 ~ "CH03", 
+    regioach == 4 ~ "CH04", 
+    regioach == 5 ~ "CH05", 
+    regioach == 6 ~ "CH06", 
+    regioach == 7 ~ "CH07", 
+    TRUE ~ NA
+  ))
+
+
+#Czechia (coded to nuts3)
+ess1_cza <- ess1_cza %>% 
+  mutate(reg_code = case_when(
+    regioncz == 1 ~ "CZ010", 
+    regioncz == 2 ~ "CZ020", 
+    regioncz == 3 ~ "CZ031", 
+    regioncz == 4 ~ "CZ032", 
+    regioncz == 5 ~ "CZ041", 
+    regioncz == 6 ~ "CZ042", 
+    regioncz == 7 ~ "CZ051", 
+    regioncz == 8 ~ "CZ052", 
+    regioncz == 9 ~ "CZ053", 
+    regioncz == 10 ~ "CZ061", 
+    regioncz == 11 ~ "CZ062", 
+    regioncz == 12 ~ "CZ071", 
+    regioncz == 13 ~ "CZ072", 
+    regioncz == 14 ~ "CZ080", 
+    TRUE ~ NA
+  ))
+
+#Denmark (coded to nuts3)
+ess1_dka <- ess1_dka %>% 
+  mutate(reg_code = case_when(
+    regiondk == 1 ~ "DK001", 
+    regiondk == 2 ~ "DK002", 
+    regiondk == 3 ~ "DK003", 
+    regiondk == 4 ~ "DK004", 
+    regiondk == 5 ~ "DK005", 
+    regiondk == 6 ~ "DK006", 
+    regiondk == 7 ~ "DK007", 
+    regiondk == 8 ~ "DK008", 
+    regiondk == 9 ~ "DK009", 
+    regiondk == 10 ~ "DK00A", 
+    regiondk == 11 ~ "DK00B", 
+    regiondk == 12 ~ "DK00C", 
+    regiondk == 13 ~ "DK00D", 
+    regiondk == 14 ~ "DK00E", 
+    regiondk == 15 ~ "DK00F", 
+    TRUE ~ NA
+  ))
+
+
+#Spain 
+ess1_esa <- ess1_esa %>% 
+  mutate(reg_code = case_when(
+    regiones == 11 ~ "ES11", 
+    regiones == 12 ~ "ES12", 
+    regiones == 13 ~ "ES13", 
+    regiones == 21 ~ "ES21", 
+    regiones == 22 ~ "ES22", 
+    regiones == 23 ~ "ES23", 
+    regiones == 24 ~ "ES24", 
+    regiones == 30 ~ "ES30", 
+    regiones == 41 ~ "ES41", 
+    regiones == 42 ~ "ES42", 
+    regiones == 43 ~ "ES43", 
+    regiones == 51 ~ "ES51", 
+    regiones == 52 ~ "ES52", 
+    regiones == 53 ~ "ES53", 
+    regiones == 61 ~ "ES61", 
+    regiones == 62 ~ "ES62", 
+    regiones == 63 ~ "ES63", 
+    regiones == 70 ~ "ES70", 
+    TRUE ~ NA
+  ))
+
+#france 
+
+ess1_fra <- ess1_fra %>%
+  mutate(reg_code = case_when(
+    regionfr == 1 ~ "FR1", 
+    regionfr == 2 ~ "FR2", 
+    regionfr == 3 ~ "FR2", 
+    regionfr == 4 ~ "FR3", 
+    regionfr == 5 ~ "FR4", 
+    regionfr == 6 ~ "FR5", 
+    regionfr == 7 ~ "FR6", 
+    regionfr == 8 ~ "FR7", 
+    regionfr == 9 ~ "FR8", 
+    TRUE ~ NA
+  ))
+
+#Hungary 
+ess1_hua <- ess1_hua %>% 
+  mutate(reg_code = case_when(
+    regionhu == 1 ~ "HU10", 
+    regionhu == 2 ~ "HU21", 
+    regionhu == 3 ~ "HU22", 
+    regionhu == 4 ~ "HU23", 
+    regionhu == 5 ~ "HU31", 
+    regionhu == 6 ~ "HU32", 
+    regionhu == 7 ~ "HU33", 
+    TRUE ~ NA
+  ))
+
+
+
+
+
+
+
+
 
 
 
