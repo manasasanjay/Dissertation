@@ -341,6 +341,9 @@ ess1_a_full <- rbind(ess1_ata, ess1_cha, ess1_cza, ess1_dka, ess1_esa, ess1_fra,
                      ess1_hua, ess1_iea, ess1_nla, ess1_noa, ess1_pla, ess1_pta, 
                      ess1_sea)
 
+#subset dataset to only have variables required 
+
+
 
 
 
