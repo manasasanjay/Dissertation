@@ -343,6 +343,21 @@ ess1_a_full <- rbind(ess1_ata, ess1_cha, ess1_cza, ess1_dka, ess1_esa, ess1_fra,
 
 #subset dataset to only have variables required 
 
+ess1_a_subset <- ess1_a_full[, c("name", "essround", "edition", "proddate", 
+                                 "idno", "cntry", "reg_code","dweight", "pspwght", 
+                                 "pweight", "anweight", "regionat", "regioach", 
+                                 "regioncz", "regiondk", "regiones", "regionfr", 
+                                 "regionhu", "regionie", "regionnl", "regionno", 
+                                 "regionpl", "regionpt", "regionse", "ppltrst", 
+                                 "pplfair", "pplhlp", "lrscale", "stflife", 
+                                 "stfeco", "dclmig", "aesfdrk", "ctzcntr", 
+                                 "ctzship", "brncntr", "livecntr", "trstlgl", 
+                                 "trstplc", "trstplt", "trstprl", "imsmetn", 
+                                 "imdfetn", "qfimwht", "qfimcmt", "imueclt", 
+                                 "idetalv", "pplstrd", "imgfrnd", "imgclg", 
+                                 "yrlvdae", "empl", "gndr", "agea", "domicil", 
+                                 "eduyrs", "hinctnt", "lvgptn", "imptrad", 
+                                 "crmvct")]
 
 
 
