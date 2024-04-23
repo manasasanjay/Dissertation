@@ -641,6 +641,52 @@ ess1_a_subset$lvgptn <- as.character(ess1_a_subset$lvgptn)
 ess1_a_subset$imptrad <- as.numeric(ess1_a_subset$imptrad)
 ess1_a_subset$crmvct <- as.character(ess1_a_subset$crmvct)
 
+#create a social trust variable, a mean of ppltrst, pplfair, and pplhlp including
+#only respondents who have responded to at least 2 out of the three questions 
+
+
+ess1_a_subset$trst_resp_no <-  rowSums(!is.na(ess1_a_subset[, c("ppltrst", 
+                                                                "pplfair", 
+                                                                "pplhlp")]))
+
+ess1_a_subset$soc_trst <- ifelse(ess1_a_subset$trst_resp_no >= 2, 
+                              rowMeans(ess1_a_subset[, c("ppltrst", 
+                                                         "pplfair", 
+                                                         "pplhlp")], 
+                                       na.rm = TRUE), NA)
+
+#create an institutional trust variable, a mean of trstlgl, trstplc, trstplt, 
+#and trstprl including only respondents who have responded to at least 2 out of 
+#the 4 questions 
+
+ess1_a_subset$instrst_resp_no <-  rowSums(!is.na(ess1_a_subset[, c("trstlgl", 
+                                                                "trstplc", 
+                                                                "trstplt", 
+                                                                "trstprl")]))
+
+ess1_a_subset$ins_trst <- ifelse(ess1_a_subset$instrst_resp_no >= 2, 
+                                 rowMeans(ess1_a_subset[, c("trstlgl", 
+                                                            "trstplc", 
+                                                            "trstplt", 
+                                                            "trstprl")], 
+                                          na.rm = TRUE), NA)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
