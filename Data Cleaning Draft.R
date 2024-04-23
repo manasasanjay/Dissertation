@@ -3,6 +3,8 @@ library(readxl)
 library(dplyr)
 library(ltm)
 library(corrplot)
+library(GGally)
+library(ggplot2)
 
 #load survey data 
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
@@ -713,6 +715,9 @@ corrplot.mixed(
   upper="ellipse",tl.cex=0.3)
 
 dev.off()
+
+
+
 
 
 
