@@ -2,6 +2,7 @@ library(haven)
 library(readxl)
 library(dplyr)
 library(ltm)
+library(corrplot)
 
 #load survey data 
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
@@ -703,8 +704,15 @@ ess1_a_subset$pplstrd_std <- scale(ess1_a_subset$pplstrd) #better for country if
 ess1_a_subset$imptrad_std <- scale(ess1_a_subset$imptrad) #important to follow traditions and customs
 
 
+png(file = "Dissertation GitHub/figures/corrplot1.png",
+    width = 6000, height = 4000, res = 650)
 
+corrplot.mixed(
+  cor(ess1_a_subset[,64:71],
+      use="complete.obs"),
+  upper="ellipse",tl.cex=0.3)
 
+dev.off()
 
 
 
