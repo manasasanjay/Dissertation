@@ -36,7 +36,7 @@ switzerland_1 <- read_excel("Desktop/PPE/DISS/Switzerland_2001_Census.xlsx")
 
 #make a full dataset 
 
-census_full_1 <- rbind(austria_1, czechia_1, denmark_1, finland_1, france_1, 
+census_full_1 <- rbind(austria_1, czechia_1, denmark_1, france_1, 
                        hungary_1, ireland_1, netherlands_1, norway_1, poland_1, 
                        portugal_1, spain_1, sweden_1, switzerland_1)
 #rename columns 
@@ -45,8 +45,91 @@ colnames(census_full_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep",
                              "north_am", "other_am", "mid_east", 
                              "former_ussr_asia", "other_asia", "oceania", 
                              "rep", "total")
-#remove europe column 
-census_full_1 <- census_full_1[, !names(census_full_1) %in% c("eur")]
+colnames(austria_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(czechia_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(denmark_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(france_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(hungary_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+
+colnames(ireland_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(netherlands_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(norway_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(poland_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(portugal_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(spain_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(sweden_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+colnames(switzerland_1) <- c("reg_code", "reg_name", "eur", "eu_not_rep", 
+                             "former_ussr_eur", "north_afr", "other_afr", 
+                             "north_am", "other_am", "mid_east", 
+                             "former_ussr_asia", "other_asia", "oceania", 
+                             "rep", "total")
+
+#remove europe & total column 
+austria_1 <- austria_1[, !names(austria_1) %in% c("eur", "total")]
+czechia_1 <- czechia_1[, !names(czechia_1) %in% c("eur", "total")]
+denmark_1 <- denmark_1[, !names(denmark_1) %in% c("eur", "total")]
+france_1 <- france_1[, !names(france_1) %in% c("eur", "total")]
+hungary_1 <- hungary_1[, !names(hungary_1) %in% c("eur", "total")]
+ireland_1 <- ireland_1[, !names(ireland_1) %in% c("eur", "total")]
+netherlands_1 <- netherlands_1[, !names(netherlands_1) %in% c("eur", "total")]
+norway_1 <- norway_1[, !names(norway_1) %in% c("eur", "total")]
+poland_1 <- poland_1[, !names(poland_1) %in% c("eur", "total")]
+portugal_1 <- portugal_1[, !names(portugal_1) %in% c("eur", "total")]
+spain_1 <- spain_1[, !names(spain_1) %in% c("eur", "total")]
+sweden_1 <- sweden_1[, !names(sweden_1) %in% c("eur", "total")]
+switzerland_1 <- switzerland_1[, !names(switzerland_1) %in% c("eur", "total")]
+
+
+#spain has NA values for ussr asian countries, code them as NA 
+spain_1$former_ussr_asia <- NA
 
 #first split the data by country because it is the integrated file and you 
 #cannot assign the stupid codes until you split it 
@@ -359,8 +442,118 @@ ess1_a_subset <- ess1_a_full[, c("name", "essround", "edition", "proddate",
                                  "eduyrs", "hinctnt", "lvgptn", "imptrad", 
                                  "crmvct")]
 
+#calculate ethnic share in each region for each country to calculate HHI 
+#first create a total column 
 
+#function to make life easier 
 
+add_total_column <- function(data) {
+  start_col <- 3  
+  end_col <- 13  
+  
+  # Calculate row sums for the specified columns
+  total <- rowSums(data[, start_col:end_col], na.rm = TRUE)
+  
+  # Add the total column to the dataset
+  data$total <- total
+  return(data)
+}
+
+#austria 
+austria_1 <- add_total_column(austria_1)
+
+#czechia 
+czechia_1 <- add_total_column(czechia_1)
+
+#denmark 
+denmark_1 <- add_total_column(denmark_1)
+
+#france
+france_1 <- add_total_column(france_1)
+
+#hungary 
+hungary_1 <- add_total_column(hungary_1)
+
+#ireland 
+ireland_1 <- add_total_column(ireland_1)
+
+#netherlands 
+netherlands_1 <- add_total_column(netherlands_1)
+
+#norway 
+norway_1 <- add_total_column(norway_1)
+
+#poland 
+poland_1 <- add_total_column(poland_1)
+
+#portugal 
+portugal_1 <- add_total_column(portugal_1)
+
+#spain 
+spain_1 <- add_total_column(spain_1)
+
+#sweden 
+sweden_1 <- add_total_column(sweden_1)
+
+#switzerland 
+switzerland_1 <- add_total_column(switzerland_1)
+
+#calculate ethnic share for each group and HHI 
+#HHI = sum(eth_share^2)
+
+#function to compute HHI 
+
+add_HHI_column <- function(data) {
+  start_col <- 3  
+  end_col <- 13   
+  total <- rowSums(data[, start_col:end_col])
+  
+  # Calculate the squared proportion of each variable and sum them up
+  HHI <- rowSums((data[, start_col:end_col] / total)^2)
+  
+  # Add the HHI values as a new column to the dataset
+  data$HHI <- HHI
+  return(data)
+}
+
+#austria 
+austria_1 <- add_HHI_column(austria_1)
+
+#czechia
+czechia_1 <- add_HHI_column(czechia_1)
+
+#denmark 
+denmark_1 <- add_HHI_column(denmark_1)
+
+#france 
+france_1 <- add_HHI_column(france_1)
+
+#hungary 
+hungary_1 <- add_HHI_column(hungary_1)
+
+#ireland 
+ireland_1 <- add_HHI_column(ireland_1)
+
+#netherlands
+netherlands_1 <- add_HHI_column(netherlands_1)
+
+#norway 
+norway_1 <- add_HHI_column(norway_1)
+
+#poland 
+poland_1 <- add_HHI_column(poland_1)
+
+#portugal 
+portugal_1 <- add_HHI_column(portugal_1)
+
+#spain
+spain_1 <- add_HHI_column(spain_1)
+
+#sweden 
+sweden_1 <- add_HHI_column(sweden_1)
+
+#switzerland 
+switzerland_1 <- add_HHI_column(switzerland_1)
 
 
 
