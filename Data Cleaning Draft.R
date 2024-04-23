@@ -1,6 +1,7 @@
 library(haven)
 library(readxl)
 library(dplyr)
+library(ltm)
 
 #load survey data 
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
@@ -672,17 +673,34 @@ ess1_a_subset$ins_trst <- ifelse(ess1_a_subset$instrst_resp_no >= 2,
                                           na.rm = TRUE), NA)
 
 
+trst_data <- ess1_a_subset[, c("ppltrst", "pplfair", "pplhlp")]
+trst_data <- na.omit(trst_data)
 
+cronbach.alpha(trst_data) #0.77
 
+instrst_data <- ess1_a_subset[, c("trstlgl", "trstplc", "trstplt", "trstprl")]
+instrst_data <- na.omit(instrst_data)
 
+cronbach.alpha(instrst_data) #0.84
 
+#Before being able to do PCA, standardise all the variables to be used as 
+#indicators 
 
+ess1_a_subset$lrscale_std <- scale(ess1_a_subset$lrscale) #left-right scale
 
+ess1_a_subset$imsmetn_std <- scale(ess1_a_subset$imsmetn) #allow many/few same ethnicity immigrants
 
+ess1_a_subset$imdfetn_std <- scale(ess1_a_subset$imdfetn) #allow many/few diff ethnicity immigrants
 
+ess1_a_subset$qfimwht_std <- scale(ess1_a_subset$qfimwht) #qualificatino for immigration: be white
 
+ess1_a_subset$qfimcmt_std <- scale(ess1_a_subset$qfimcmt) #qualification for immigration: be committed to way of life in the country 
 
+ess1_a_subset$imueclt_std <- scale(ess1_a_subset$imueclt) #cultural life undermined/enriched by immigrants
 
+ess1_a_subset$pplstrd_std <- scale(ess1_a_subset$pplstrd) #better for country if everyone shares customs and trads
+
+ess1_a_subset$imptrad_std <- scale(ess1_a_subset$imptrad) #important to follow traditions and customs
 
 
 
