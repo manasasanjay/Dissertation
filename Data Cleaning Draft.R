@@ -10,22 +10,20 @@ library(ggthemes)
 #load survey data 
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
 
-#load census data for each country 
+#load 2001 census data for each country 
 austria_1 <- read_excel("Desktop/PPE/DISS/Austria_2001_Census.xlsx")
 
-czechia_1 <- read_excel("Desktop/PPE/DISS/Czechia_2001_Censusb.xlsx")
+czechia_1 <- read_excel("Desktop/PPE/DISS/Czechia_2001_Census.xlsx")
 
-denmark_1 <- read_excel("Desktop/PPE/DISS/Denmark_2001_Censusb.xlsx")
-
-finland_1 <- read_excel("Desktop/PPE/DISS/Finland_2001_Census.xlsx")
+denmark_1 <- read_excel("Desktop/PPE/DISS/Denmark_2001_Census.xlsx")
 
 france_1 <- read_excel("Desktop/PPE/DISS/France_2001_Census.xlsx")
 
 hungary_1 <- read_excel("Desktop/PPE/DISS/Hungary_2001_Census.xlsx")
 
-ireland_1 <- read_excel("Desktop/PPE/DISS/Ireland_2001_Censusb.xlsx")
+ireland_1 <- read_excel("Desktop/PPE/DISS/Ireland_2001_Census.xlsx")
 
-netherlands_1 <- read_excel("Desktop/PPE/DISS/Netherlands_2001_Censusb.xlsx")
+netherlands_1 <- read_excel("Desktop/PPE/DISS/Netherlands_2001_Census.xlsx")
 
 norway_1 <- read_excel("Desktop/PPE/DISS/Norway_2001_Census.xlsx")
 
@@ -38,6 +36,35 @@ spain_1 <- read_excel("Desktop/PPE/DISS/Spain_2001_Census.xlsx")
 sweden_1 <- read_excel("Desktop/PPE/DISS/Sweden_2001_Census.xlsx")
 
 switzerland_1 <- read_excel("Desktop/PPE/DISS/Switzerland_2001_Census.xlsx")
+
+#load 2011 census data for each country 
+austria_2 <- read_excel("Desktop/PPE/DISS/Austria_2011_Census.xlsx")
+
+czechia_2 <- read_excel("Desktop/PPE/DISS/Czechia_2011_Census.xlsx")
+
+denmark_2 <- read_excel("Desktop/PPE/DISS/Denmark_2011_Census.xlsx")
+
+france_2 <- read_excel("Desktop/PPE/DISS/France_2011_Census.xlsx")
+
+hungary_2 <- read_excel("Desktop/PPE/DISS/Hungary_2011_Census.xlsx")
+
+ireland_2 <- read_excel("Desktop/PPE/DISS/Ireland_2011_Census.xlsx")
+
+netherlands_2 <- read_excel("Desktop/PPE/DISS/Netherlands_2011_Census.xlsx")
+
+norway_2 <- read_excel("Desktop/PPE/DISS/Norway_2011_Census.xlsx")
+
+poland_2 <- read_excel("Desktop/PPE/DISS/Poland_2011_Census.xlsx")
+
+portugal_2 <- read_excel("Desktop/PPE/DISS/Portugal_2011_Census.xlsx")
+
+spain_2 <- read_excel("Desktop/PPE/DISS/Spain_2011_Census.xlsx")
+
+sweden_2 <- read_excel("Desktop/PPE/DISS/Sweden_2011_Census.xlsx")
+
+switzerland_2 <- read_excel("Desktop/PPE/DISS/Switzerland_2011_Census.xlsx")
+
+#----------------NEED TO EDIT EVERYTHING BECAUSE EVERYTHING IS INCORRECT--------
 
 #make a full dataset 
 
@@ -741,7 +768,7 @@ pcafit2
 
 pcafit3 <- prcomp(na.omit(ess1_a_subset[,65:70], scale.=TRUE))
 summary(pcafit3)
-
+pcafit3
 
 
 
