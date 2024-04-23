@@ -506,10 +506,10 @@ switzerland_1 <- add_total_column(switzerland_1)
 add_HHI_column <- function(data) {
   start_col <- 3  
   end_col <- 13   
-  total <- rowSums(data[, start_col:end_col])
+  total <- rowSums(data[, start_col:end_col], na.rm = TRUE)
   
   # Calculate the squared proportion of each variable and sum them up
-  HHI <- rowSums((data[, start_col:end_col] / total)^2)
+  HHI <- rowSums((data[, start_col:end_col] / total)^2, na.rm = TRUE)
   
   # Add the HHI values as a new column to the dataset
   data$HHI <- HHI
@@ -596,9 +596,50 @@ sweden_1$Eth_Frac <- (1-sweden_1$HHI)
 #switzerland 
 switzerland_1$Eth_Frac <- (1-switzerland_1$HHI)
 
+#put into a single dataset 
 
+census_full_1 <- rbind(austria_1, czechia_1, denmark_1, france_1, 
+                       hungary_1, ireland_1, netherlands_1, norway_1, poland_1, 
+                       portugal_1, spain_1, sweden_1, switzerland_1)
 
+#------------------------------------------------------------------------------#
 
+#recode 
+ess1_a_subset$ppltrst <- as.numeric(ess1_a_subset$ppltrst)
+ess1_a_subset$pplfair <- as.numeric(ess1_a_subset$pplfair)
+ess1_a_subset$pplhlp <- as.numeric(ess1_a_subset$pplhlp)
+ess1_a_subset$lrscale <- as.numeric(ess1_a_subset$lrscale)
+ess1_a_subset$stflife <- as.numeric(ess1_a_subset$stflife)
+ess1_a_subset$stfeco <- as.numeric(ess1_a_subset$stfeco)
+ess1_a_subset$dclmig <- as.character(ess1_a_subset$dclmig)
+ess1_a_subset$aesfdrk <- as.character(ess1_a_subset$aesfdrk)
+ess1_a_subset$ctzcntr <- as.character(ess1_a_subset$ctzcntr)
+ess1_a_subset$ctzship <- as.character(ess1_a_subset$ctzship)
+ess1_a_subset$brncntr <- as.character(ess1_a_subset$brncntr)
+ess1_a_subset$livecntr <- as.character(ess1_a_subset$livecntr)
+ess1_a_subset$trstlgl <- as.numeric(ess1_a_subset$trstlgl)
+ess1_a_subset$trstplc <- as.numeric(ess1_a_subset$trstplc)
+ess1_a_subset$trstplt <- as.numeric(ess1_a_subset$trstplt)
+ess1_a_subset$trstprl <- as.numeric(ess1_a_subset$trstprl)
+ess1_a_subset$imsmetn <- as.numeric(ess1_a_subset$imsmetn)
+ess1_a_subset$imdfetn <- as.numeric(ess1_a_subset$imdfetn)
+ess1_a_subset$qfimwht <- as.numeric(ess1_a_subset$qfimwht)
+ess1_a_subset$qfimcmt <- as.numeric(ess1_a_subset$qfimcmt)
+ess1_a_subset$imueclt <- as.numeric(ess1_a_subset$imueclt)
+ess1_a_subset$idetalv <- as.character(ess1_a_subset$idetalv)
+ess1_a_subset$pplstrd <- as.numeric(ess1_a_subset$pplstrd)
+ess1_a_subset$imgfrnd <- as.character(ess1_a_subset$imgfrnd)
+ess1_a_subset$imgclg <- as.character(ess1_a_subset$imgclg)
+ess1_a_subset$yrlvdae <- as.numeric(ess1_a_subset$yrlvdae)
+ess1_a_subset$empl <- as.character(ess1_a_subset$empl)
+ess1_a_subset$gndr <- as.character(ess1_a_subset$gndr)
+ess1_a_subset$agea <- as.numeric(ess1_a_subset$agea)
+ess1_a_subset$domicil <- as.character(ess1_a_subset$domicil)
+ess1_a_subset$eduyrs <- as.numeric(ess1_a_subset$eduyrs)
+ess1_a_subset$hinctnt <- as.character(ess1_a_subset$hinctnt)
+ess1_a_subset$lvgptn <- as.character(ess1_a_subset$lvgptn)
+ess1_a_subset$imptrad <- as.numeric(ess1_a_subset$imptrad)
+ess1_a_subset$crmvct <- as.character(ess1_a_subset$crmvct)
 
 
 
