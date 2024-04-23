@@ -3,8 +3,8 @@ library(readxl)
 library(dplyr)
 library(ltm)
 library(corrplot)
-library(GGally)
 library(ggplot2)
+library(GGally)
 
 #load survey data 
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
@@ -689,21 +689,21 @@ cronbach.alpha(instrst_data) #0.84
 #Before being able to do PCA, standardise all the variables to be used as 
 #indicators 
 
-ess1_a_subset$lrscale_std <- scale(ess1_a_subset$lrscale) #left-right scale
+ess1_a_subset$lrscale_std <- scale(ess1_a_subset$lrscale, scale = TRUE) #left-right scale
 
-ess1_a_subset$imsmetn_std <- scale(ess1_a_subset$imsmetn) #allow many/few same ethnicity immigrants
+ess1_a_subset$imsmetn_std <- scale(ess1_a_subset$imsmetn, scale = TRUE) #allow many/few same ethnicity immigrants
 
-ess1_a_subset$imdfetn_std <- scale(ess1_a_subset$imdfetn) #allow many/few diff ethnicity immigrants
+ess1_a_subset$imdfetn_std <- scale(ess1_a_subset$imdfetn, scale = TRUE) #allow many/few diff ethnicity immigrants
 
-ess1_a_subset$qfimwht_std <- scale(ess1_a_subset$qfimwht) #qualificatino for immigration: be white
+ess1_a_subset$qfimwht_std <- scale(ess1_a_subset$qfimwht, scale = TRUE) #qualificatino for immigration: be white
 
-ess1_a_subset$qfimcmt_std <- scale(ess1_a_subset$qfimcmt) #qualification for immigration: be committed to way of life in the country 
+ess1_a_subset$qfimcmt_std <- scale(ess1_a_subset$qfimcmt, scale = TRUE) #qualification for immigration: be committed to way of life in the country 
 
-ess1_a_subset$imueclt_std <- scale(ess1_a_subset$imueclt) #cultural life undermined/enriched by immigrants
+ess1_a_subset$imueclt_std <- scale(ess1_a_subset$imueclt, scale = TRUE) #cultural life undermined/enriched by immigrants
 
-ess1_a_subset$pplstrd_std <- scale(ess1_a_subset$pplstrd) #better for country if everyone shares customs and trads
+ess1_a_subset$pplstrd_std <- scale(ess1_a_subset$pplstrd, scale = TRUE) #better for country if everyone shares customs and trads
 
-ess1_a_subset$imptrad_std <- scale(ess1_a_subset$imptrad) #important to follow traditions and customs
+ess1_a_subset$imptrad_std <- scale(ess1_a_subset$imptrad, scale = TRUE) #important to follow traditions and customs
 
 
 png(file = "Dissertation GitHub/figures/corrplot1.png",
@@ -717,6 +717,18 @@ corrplot.mixed(
 dev.off()
 
 
+
+pcafit <- prcomp(na.omit(ess1_a_subset[,64:71], scale.=TRUE))
+pcafit
+
+summary(pcafit)
+
+screeplot(pcafit,type="barplot")
+#screeplot(pcafit,type="lines")
+
+nrow(pcafit$x[1])
+
+ess1_a_subset$PC1 <- ifelse(is.na(ess1_a_subset[, 64:71]), NA, pcafit$x[,1])
 
 
 
