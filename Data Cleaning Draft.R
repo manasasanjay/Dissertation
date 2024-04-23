@@ -723,14 +723,15 @@ pcafit
 
 summary(pcafit)
 
-screeplot(pcafit,type="barplot")
-#screeplot(pcafit,type="lines")
+png(file = "Dissertation GitHub/figures/screeplot1.png",
+    width = 6000, height = 4000, res = 650)
+#screeplot(pcafit,type="barplot")
+screeplot(pcafit,type="lines")
+dev.off()
 
 nrow(pcafit$x[1])
 
-ess1_a_subset$PC1 <- ifelse(is.na(ess1_a_subset[, 64:71]), NA, pcafit$x[,1])
-
-
+ess1_a_subset$PC1 <- pcafit$x[,1]
 
 
 
