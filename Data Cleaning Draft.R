@@ -555,6 +555,51 @@ sweden_1 <- add_HHI_column(sweden_1)
 #switzerland 
 switzerland_1 <- add_HHI_column(switzerland_1)
 
+#Ethnic fractionalisation index = 1- HHI
+
+#austria 
+austria_1$Eth_Frac <- (1-austria_1$HHI)
+
+#czechia 
+czechia_1$Eth_Frac <- (1-czechia_1$HHI)
+
+#denmark 
+denmark_1$Eth_Frac <- (1-denmark_1$HHI)
+
+#france 
+france_1$Eth_Frac <- (1-france_1$HHI)
+
+#hungary 
+hungary_1$Eth_Frac <- (1-hungary_1$HHI)
+
+#ireland 
+ireland_1$Eth_Frac <- (1-ireland_1$HHI)
+
+#netherlands 
+netherlands_1$Eth_Frac <- (1-netherlands_1$HHI)
+
+#norway 
+norway_1$Eth_Frac <- (1-norway_1$HHI)
+
+#poland 
+poland_1$Eth_Frac <- (1-poland_1$HHI)
+
+#portugal 
+portugal_1$Eth_Frac <- (1-portugal_1$HHI)
+
+#spain
+spain_1$Eth_Frac <- (1-spain_1$HHI)
+
+#sweden 
+sweden_1$Eth_Frac <- (1-sweden_1$HHI)
+
+#switzerland 
+switzerland_1$Eth_Frac <- (1-switzerland_1$HHI)
+
+
+
+
+
 
 
 
