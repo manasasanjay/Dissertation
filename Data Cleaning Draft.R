@@ -5,6 +5,7 @@ library(ltm)
 library(corrplot)
 library(ggplot2)
 library(GGally)
+library(ggthemes)
 
 #load survey data 
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
@@ -732,6 +733,17 @@ dev.off()
 nrow(pcafit$x[1])
 
 ess1_a_subset$PC1 <- pcafit$x[,1]
+
+pcafit2 <- prcomp(na.omit(ess1_a_subset[,65:71], scale.=TRUE))
+summary(pcafit2)
+
+pcafit2
+
+pcafit3 <- prcomp(na.omit(ess1_a_subset[,65:70], scale.=TRUE))
+summary(pcafit3)
+
+
+
 
 
 
