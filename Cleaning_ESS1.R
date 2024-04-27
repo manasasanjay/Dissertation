@@ -327,7 +327,7 @@ ess1_a_subset$stflife <- as.numeric(ess1_a_subset$stflife)
 ess1_a_subset$stfeco <- as.numeric(ess1_a_subset$stfeco)
 ess1_a_subset$dclmig <- as.character(ess1_a_subset$dclmig)
 ess1_a_subset$aesfdrk <- as.character(ess1_a_subset$aesfdrk)
-ess1_a_subset$ctzcntr <- as.character(ess1_a_subset$ctzcntr)
+ess1_a_subset$ctzcntr <- as.numeric(ess1_a_subset$ctzcntr)
 ess1_a_subset$ctzship <- as.character(ess1_a_subset$ctzship)
 ess1_a_subset$brncntr <- as.character(ess1_a_subset$brncntr)
 ess1_a_subset$livecntr <- as.character(ess1_a_subset$livecntr)
@@ -386,6 +386,41 @@ ess1_a_subset$ins_trst <- ifelse(ess1_a_subset$instrst_resp_no >= 2,
                                           na.rm = TRUE), NA)
 
 
+#recode categorical variables 
+#preferred decision level of immigration and refugee policies 
+
+ess1_a_subset$dclmig <- recode(ess1_a_subset$dclmig, "1" = "International Level", 
+                               "2" = "European Level", "3" = "National Level", 
+                               "4" = "Regional or Local Level")
+
+#feeling of safety of walking alone in local area after dark 
+ess1_a_subset$aesfdrk <- recode(ess1_a_subset$aesfdrk, "1" = "Very safe", 
+                             "2" = "Safe", "3" = "Unsafe", "4" = "Very unsafe")
+
+#Citizen of reporting country (dummy variable)
+ess1_a_subset$ctzcntr <- ifelse(ess1_a_subset$ctzcntr == 1, 1, 0)
+
+#born in the country (dummy variable)
+ess1_a_subset$brncntr <- ifelse(ess1_a_subset$brncntr == 1, 1, 0)
+
+#How long ago first came to live in country 
+ess1_a_subset$livecntr <- recode(ess1_a_subset$livecntr, "1" = "<1", "2" = "1-5", 
+                                 "3" = "6-10", "4" = "11-20", "5" = ">20")
+
+#People of minority race/ethnic group in ideal living area 
+ess1_a_subset$idetalv <- recode(ess1_a_subset$idetalv, "1" = "Almost nobody", 
+                                "2" = "Some", "3" = "Many", 
+                                "4" = "It would make no difference")
+
+#Immigrant Friends 
+ess1_a_subset$imgfrnd <- recode(ess1_a_subset$imgfrnd, "1" = "Yes, several", 
+                                "2" = "Yes, a few", "3" = "No, none at all")
+
+
+#Immigrant colleagues 
+ess1_a_subset$imgclg <- recode(ess1_a_subset$imgclg, "1" = "Yes, several", 
+                               "2" = "Yes, a few", "3" = "No, none at all", 
+                               "4" = "Not currently working")
 
 
 
