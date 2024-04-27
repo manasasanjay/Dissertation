@@ -6,6 +6,7 @@ library(corrplot)
 library(ggplot2)
 library(GGally)
 library(ggthemes)
+library(mosaic)
 
 #load survey data 
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
@@ -461,6 +462,73 @@ ess1_a_subset <- ess1_a_subset %>%
     hinctnt %in% c("11", "12") ~ "> €90k",
     TRUE ~ NA  
   ))
+
+
+#Method 1: standardise, run PCA
+#standardise all the variables to be used in the PCA
+
+ess1_PCA1_subset <- ess1_a_subset
+
+#Allow many/few immigrants of same race/ethnic group as majority
+ess1_PCA1_subset <- ess1_PCA1_subset %>%
+  mutate(imsmetn_std = scale(imsmetn))
+
+#check mean & sd 
+mean(ess1_PCA1_subset$imsmetn_std, na.rm = TRUE) #v close to 0
+sd(ess1_PCA1_subset$imsmetn_std, na.rm = TRUE) #1 
+
+#Allow many/few immigrants of different race/ethnic group from majority 
+ess1_PCA1_subset <- ess1_PCA1_subset %>%
+  mutate(imdfetn_std = scale(imdfetn))
+
+#check mean & sd 
+mean(ess1_PCA1_subset$imdfetn_std, na.rm = TRUE) #v close to 0
+sd(ess1_PCA1_subset$imdfetn_std, na.rm = TRUE) #1 
+
+#Qualification for immigration: be white 
+ess1_PCA1_subset <- ess1_PCA1_subset %>%
+  mutate(qfimwht_std = scale(qfimwht))
+
+#check mean and sd 
+mean(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #v close to 0 
+sd(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #
+
+#Qualification for immigration: be committed to way of life in country 
+ess1_PCA1_subset <- ess1_PCA1_subset %>%
+  mutate(qfimcmt_std = scale(qfimcmt))
+
+#check mean and sd 
+mean(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #v close to 0 
+sd(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #
+
+#Country's cultural life undermined or enriched by immigrants 
+ess1_PCA1_subset <- ess1_PCA1_subset %>%
+  mutate(imueclt_std = scale(imueclt))
+
+#check mean and sd 
+mean(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #super close to 0 
+sd(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #
+
+#Better for a country if everyone shares customs and traditions 
+ess1_PCA1_subset <- ess1_PCA1_subset %>%
+  mutate(pplstrd_std = scale(pplstrd))
+
+#check mean and sd 
+mean(ess1_PCA1_subset$pplstrd_std, na.rm = TRUE) #v close to 0 
+sd(ess1_PCA1_subset$pplstrd_std, na.rm = TRUE) #
+
+#important to follow traditions and customs 
+ess1_PCA1_subset <- ess1_PCA1_subset %>%
+  mutate(imptrad_std = scale(imptrad))
+
+#check mean and sd 
+mean(ess1_PCA1_subset$imptrad_std, na.rm = TRUE) #v close to 0 
+sd(ess1_PCA1_subset$imptrad_std, na.rm = TRUE)
+
+
+
+
+
 
 
 
