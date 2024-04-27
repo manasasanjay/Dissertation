@@ -317,7 +317,8 @@ ess1_a_subset <- ess1_a_full[, c("name", "essround", "edition", "proddate",
                                  "idetalv", "pplstrd", "imgfrnd", "imgclg", 
                                  "yrlvdae", "empl", "gndr", "agea", "domicil", 
                                  "eduyrs", "hinctnt", "lvgptn", "imptrad", 
-                                 "crmvct")]
+                                 "crmvct", "imbgeco", "dscrgrp", "dscrrce", 
+                                 "dscrntn", "dscrlng", "dscretn", "blgetmg")]
 
 #recode class if necessary 
 ess1_a_subset$ppltrst <- as.numeric(ess1_a_subset$ppltrst)
@@ -356,6 +357,13 @@ ess1_a_subset$hinctnt <- as.character(ess1_a_subset$hinctnt)
 ess1_a_subset$lvgptn <- as.character(ess1_a_subset$lvgptn)
 ess1_a_subset$imptrad <- as.numeric(ess1_a_subset$imptrad)
 ess1_a_subset$crmvct <- as.character(ess1_a_subset$crmvct)
+ess1_a_subset$imbgeco <- as.numeric(ess1_a_subset$imbgeco)
+ess1_a_subset$dscrgrp <- as.character(ess1_a_subset$dscrgrp)
+ess1_a_subset$dscrrce <- as.character(ess1_a_subset$dscrrce)
+ess1_a_subset$dscrntn <- as.character(ess1_a_subset$dscrntn)
+ess1_a_subset$dscrlng <- as.character(ess1_a_subset$dscrlng)
+ess1_a_subset$dscretn <- as.character(ess1_a_subset$dscretn)
+ess1_a_subset$blgetmg <- as.character(ess1_a_subset$blgetmg)
 
 #create a social trust variable, a mean of ppltrst, pplfair, and pplhlp including
 #only respondents who have responded to at least 2 out of the three questions 
@@ -463,6 +471,32 @@ ess1_a_subset <- ess1_a_subset %>%
     hinctnt %in% c("11", "12") ~ "> €90k",
     TRUE ~ NA  
   ))
+
+#member of a group discriminated against in this country 
+
+ess1_a_subset$dscrgrp <- recode(ess1_a_subset$dscrgrp, "0" = "Not marked", 
+                                "1" = "Marked")
+
+#discrimination on the basis of colour or race 
+ess1_a_subset$dscrrce <- recode(ess1_a_subset$dscrrce, "0" = "Not marked", 
+                                "1" = "Marked")
+
+#discrimination on the basis of nationality 
+ess1_a_subset$dscrntn <- recode(ess1_a_subset$dscrntn, "0" = "Not marked", 
+                                "1" = "Marked")
+
+#discrimination on the basis of language
+ess1_a_subset$dscrlng <- recode(ess1_a_subset$dscrlng, "0" = "Not marked", 
+                                "1" = "Marked")
+
+
+#discrimination on the basis of ethnicity 
+ess1_a_subset$dscretn <- recode(ess1_a_subset$dscretn, "0" = "Not marked", 
+                                "1" = "Marked")
+
+#self-identification with belonging to minority ethnic group in country 
+ess1_a_subset$blgetmg <- recode(ess1_a_subset$blgetmg, "1" = "Yes", 
+                                "2" = "No")
 
 
 #Method 1: standardise, run PCA
