@@ -450,7 +450,17 @@ ess1_a_subset$lvgptn <- recode(ess1_a_subset$lvgptn, "1" = "Yes", "2" = "No")
 #Respondent or hh member ever a victime of burglary/assault in the past 5 years 
 ess1_a_subset$crmvct <- recode(ess1_a_subset$crmvct, "1" = "Yes", "2" = "No")
 
+#recode respondent income: collapse into 5 bins as opposed to the current 12. 
 
+ess1_a_subset <- ess1_a_subset %>%
+  mutate(hinctnt = case_when(
+    hinctnt %in% c("1", "2", "3", "4", "5", "6") ~ "< €24k",
+    hinctnt %in% c("7", "8") ~ "€24k < inc < €36k",
+    hinctnt == "9" ~ "€36k < inc < €60k",
+    hinctnt == "10" ~ "€60k < inc < €90k",
+    hinctnt %in% c("11", "12") ~ "> €90k",
+    TRUE ~ NA  
+  ))
 
 
 
