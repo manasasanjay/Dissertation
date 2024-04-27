@@ -313,7 +313,7 @@ ess1_a_subset <- ess1_a_full[, c("name", "essround", "edition", "proddate",
                                  "stfeco", "dclmig", "aesfdrk", "ctzcntr", 
                                  "ctzship", "brncntr", "livecntr", "trstlgl", 
                                  "trstplc", "trstplt", "trstprl", "imsmetn", 
-                                 "imdfetn", "qfimwht", "qfimcmt", "imueclt", 
+                                 "imdfetn", "qfimwht", "qfimcmt", "qfimlng", "imueclt", 
                                  "idetalv", "pplstrd", "imgfrnd", "imgclg", 
                                  "yrlvdae", "empl", "gndr", "agea", "domicil", 
                                  "eduyrs", "hinctnt", "lvgptn", "imptrad", 
@@ -340,6 +340,7 @@ ess1_a_subset$imsmetn <- as.numeric(ess1_a_subset$imsmetn)
 ess1_a_subset$imdfetn <- as.numeric(ess1_a_subset$imdfetn)
 ess1_a_subset$qfimwht <- as.numeric(ess1_a_subset$qfimwht)
 ess1_a_subset$qfimcmt <- as.numeric(ess1_a_subset$qfimcmt)
+ess1_a_subset$qfimlng <- as.numeric(ess1_a_subset$qfimlng)
 ess1_a_subset$imueclt <- as.numeric(ess1_a_subset$imueclt)
 ess1_a_subset$idetalv <- as.character(ess1_a_subset$idetalv)
 ess1_a_subset$pplstrd <- as.numeric(ess1_a_subset$pplstrd)
@@ -491,7 +492,7 @@ ess1_PCA1_subset <- ess1_PCA1_subset %>%
 
 #check mean and sd 
 mean(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #v close to 0 
-sd(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #
+sd(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #1
 
 #Qualification for immigration: be committed to way of life in country 
 ess1_PCA1_subset <- ess1_PCA1_subset %>%
@@ -499,7 +500,15 @@ ess1_PCA1_subset <- ess1_PCA1_subset %>%
 
 #check mean and sd 
 mean(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #v close to 0 
-sd(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #
+sd(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #1
+
+#Qualification for immigration: speak official language
+ess1_PCA1_subset <- ess1_PCA1_subset %>%
+  mutate(qfimlng_std = scale(qfimlng))
+
+#check mean and sd 
+mean(ess1_PCA1_subset$qfimlng_std, na.rm = TRUE) #v close to 0 
+sd(ess1_PCA1_subset$qfimlng_std, na.rm = TRUE) #1
 
 #Country's cultural life undermined or enriched by immigrants 
 ess1_PCA1_subset <- ess1_PCA1_subset %>%
@@ -507,7 +516,7 @@ ess1_PCA1_subset <- ess1_PCA1_subset %>%
 
 #check mean and sd 
 mean(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #super close to 0 
-sd(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #
+sd(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #1
 
 #Better for a country if everyone shares customs and traditions 
 ess1_PCA1_subset <- ess1_PCA1_subset %>%
@@ -515,7 +524,7 @@ ess1_PCA1_subset <- ess1_PCA1_subset %>%
 
 #check mean and sd 
 mean(ess1_PCA1_subset$pplstrd_std, na.rm = TRUE) #v close to 0 
-sd(ess1_PCA1_subset$pplstrd_std, na.rm = TRUE) #
+sd(ess1_PCA1_subset$pplstrd_std, na.rm = TRUE) #1
 
 #important to follow traditions and customs 
 ess1_PCA1_subset <- ess1_PCA1_subset %>%
@@ -523,7 +532,7 @@ ess1_PCA1_subset <- ess1_PCA1_subset %>%
 
 #check mean and sd 
 mean(ess1_PCA1_subset$imptrad_std, na.rm = TRUE) #v close to 0 
-sd(ess1_PCA1_subset$imptrad_std, na.rm = TRUE)
+sd(ess1_PCA1_subset$imptrad_std, na.rm = TRUE) #1
 
 
 
