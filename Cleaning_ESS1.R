@@ -11,7 +11,7 @@ library(ggthemes)
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
 
 #first split the data by country because it is the integrated file and you 
-#cannot assign the stupid codes until you split it 
+#cannot assign the codes until you split it 
 
 
 #Austria 
@@ -295,6 +295,110 @@ ess1_sea <-ess1_sea %>%
     regionse == 8 ~ "SE23", 
     TRUE ~ NA
   ))
+
+#rbind into one dataset 
+ess1_a_full <- rbind(ess1_ata, ess1_cha, ess1_cza, ess1_dka, ess1_esa, ess1_fra, 
+                     ess1_hua, ess1_iea, ess1_nla, ess1_noa, ess1_pla, ess1_pta, 
+                     ess1_sea)
+
+#subset to include only the variables you want 
+ess1_a_subset <- ess1_a_full[, c("name", "essround", "edition", "proddate", 
+                                 "idno", "cntry", "reg_code","dweight", "pspwght", 
+                                 "pweight", "anweight", "regionat", "regioach", 
+                                 "regioncz", "regiondk", "regiones", "regionfr", 
+                                 "regionhu", "regionie", "regionnl", "regionno", 
+                                 "regionpl", "regionpt", "regionse", "ppltrst", 
+                                 "pplfair", "pplhlp", "lrscale", "stflife", 
+                                 "stfeco", "dclmig", "aesfdrk", "ctzcntr", 
+                                 "ctzship", "brncntr", "livecntr", "trstlgl", 
+                                 "trstplc", "trstplt", "trstprl", "imsmetn", 
+                                 "imdfetn", "qfimwht", "qfimcmt", "imueclt", 
+                                 "idetalv", "pplstrd", "imgfrnd", "imgclg", 
+                                 "yrlvdae", "empl", "gndr", "agea", "domicil", 
+                                 "eduyrs", "hinctnt", "lvgptn", "imptrad", 
+                                 "crmvct")]
+
+#recode class if necessary 
+ess1_a_subset$ppltrst <- as.numeric(ess1_a_subset$ppltrst)
+ess1_a_subset$pplfair <- as.numeric(ess1_a_subset$pplfair)
+ess1_a_subset$pplhlp <- as.numeric(ess1_a_subset$pplhlp)
+ess1_a_subset$lrscale <- as.numeric(ess1_a_subset$lrscale)
+ess1_a_subset$stflife <- as.numeric(ess1_a_subset$stflife)
+ess1_a_subset$stfeco <- as.numeric(ess1_a_subset$stfeco)
+ess1_a_subset$dclmig <- as.character(ess1_a_subset$dclmig)
+ess1_a_subset$aesfdrk <- as.character(ess1_a_subset$aesfdrk)
+ess1_a_subset$ctzcntr <- as.character(ess1_a_subset$ctzcntr)
+ess1_a_subset$ctzship <- as.character(ess1_a_subset$ctzship)
+ess1_a_subset$brncntr <- as.character(ess1_a_subset$brncntr)
+ess1_a_subset$livecntr <- as.character(ess1_a_subset$livecntr)
+ess1_a_subset$trstlgl <- as.numeric(ess1_a_subset$trstlgl)
+ess1_a_subset$trstplc <- as.numeric(ess1_a_subset$trstplc)
+ess1_a_subset$trstplt <- as.numeric(ess1_a_subset$trstplt)
+ess1_a_subset$trstprl <- as.numeric(ess1_a_subset$trstprl)
+ess1_a_subset$imsmetn <- as.numeric(ess1_a_subset$imsmetn)
+ess1_a_subset$imdfetn <- as.numeric(ess1_a_subset$imdfetn)
+ess1_a_subset$qfimwht <- as.numeric(ess1_a_subset$qfimwht)
+ess1_a_subset$qfimcmt <- as.numeric(ess1_a_subset$qfimcmt)
+ess1_a_subset$imueclt <- as.numeric(ess1_a_subset$imueclt)
+ess1_a_subset$idetalv <- as.character(ess1_a_subset$idetalv)
+ess1_a_subset$pplstrd <- as.numeric(ess1_a_subset$pplstrd)
+ess1_a_subset$imgfrnd <- as.character(ess1_a_subset$imgfrnd)
+ess1_a_subset$imgclg <- as.character(ess1_a_subset$imgclg)
+ess1_a_subset$yrlvdae <- as.numeric(ess1_a_subset$yrlvdae)
+ess1_a_subset$empl <- as.character(ess1_a_subset$empl)
+ess1_a_subset$gndr <- as.character(ess1_a_subset$gndr)
+ess1_a_subset$agea <- as.numeric(ess1_a_subset$agea)
+ess1_a_subset$domicil <- as.character(ess1_a_subset$domicil)
+ess1_a_subset$eduyrs <- as.numeric(ess1_a_subset$eduyrs)
+ess1_a_subset$hinctnt <- as.character(ess1_a_subset$hinctnt)
+ess1_a_subset$lvgptn <- as.character(ess1_a_subset$lvgptn)
+ess1_a_subset$imptrad <- as.numeric(ess1_a_subset$imptrad)
+ess1_a_subset$crmvct <- as.character(ess1_a_subset$crmvct)
+
+#create a social trust variable, a mean of ppltrst, pplfair, and pplhlp including
+#only respondents who have responded to at least 2 out of the three questions 
+
+
+ess1_a_subset$trst_resp_no <-  rowSums(!is.na(ess1_a_subset[, c("ppltrst", 
+                                                                "pplfair", 
+                                                                "pplhlp")]))
+
+ess1_a_subset$soc_trst <- ifelse(ess1_a_subset$trst_resp_no >= 2, 
+                                 rowMeans(ess1_a_subset[, c("ppltrst", 
+                                                            "pplfair", 
+                                                            "pplhlp")], 
+                                          na.rm = TRUE), NA)
+
+#create an institutional trust variable, a mean of trstlgl, trstplc, trstplt, 
+#and trstprl including only respondents who have responded to at least 2 out of 
+#the 4 questions 
+
+ess1_a_subset$instrst_resp_no <-  rowSums(!is.na(ess1_a_subset[, c("trstlgl", 
+                                                                   "trstplc", 
+                                                                   "trstplt", 
+                                                                   "trstprl")]))
+
+ess1_a_subset$ins_trst <- ifelse(ess1_a_subset$instrst_resp_no >= 2, 
+                                 rowMeans(ess1_a_subset[, c("trstlgl", 
+                                                            "trstplc", 
+                                                            "trstplt", 
+                                                            "trstprl")], 
+                                          na.rm = TRUE), NA)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
