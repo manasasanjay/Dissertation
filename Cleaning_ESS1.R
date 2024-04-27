@@ -425,11 +425,30 @@ ess1_a_subset$imgclg <- recode(ess1_a_subset$imgclg, "1" = "Yes, several",
 
 
 
+#Employment status 
+ess1_a_subset$empl <- recode(ess1_a_subset$empl, "1" = "Employed", 
+                             "2" = "Self-Employed", "3" = "Not in paid work")
+#recode to a dummy variable 
+ess1_a_subset$empl <- ifelse(ess1_a_subset$empl == "Employed" | 
+                               ess1_a_subset$empl == "Self-Employed", 1, 0)
 
+#gender
+ess1_a_subset$gndr <- recode(ess1_a_subset$gndr, "1" = "Male", "2" = "Female")
 
+#respondent's description of their domicile 
+ess1_a_subset$domicil <- recode(ess1_a_subset$domicil, "1" = "A big city", 
+                                "2" = "Suburbs or outskirts of a big city", 
+                                "3" = "Town or small city", 
+                                "4" = "Country village", 
+                                "5" = "Farm home in countryside")
 
+#not sure how to work with income yet, come back to it. 
 
+#currently living with a partner 
+ess1_a_subset$lvgptn <- recode(ess1_a_subset$lvgptn, "1" = "Yes", "2" = "No")
 
+#Respondent or hh member ever a victime of burglary/assault in the past 5 years 
+ess1_a_subset$crmvct <- recode(ess1_a_subset$crmvct, "1" = "Yes", "2" = "No")
 
 
 
