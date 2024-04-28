@@ -334,8 +334,33 @@ ess7_a_subset$domicil <- recode(ess7_a_subset$domicil, "1" = "A big city",
                                 "5" = "Farm or home in countryside")
 
 #household's total net income, all sources 
-ess7_a_subset
+ess7_a_subset <- ess7_a_subset %>%
+  mutate(hinctnta = case_when(
+    hinctnta == "1" ~ "0-10%", 
+    hinctnta == "2" ~ "11-20%", 
+    hinctnta == "3" ~ "21-30%", 
+    hinctnta == "4" ~ "31-40%", 
+    hinctnta == "5" ~ "41-50%", 
+    hinctnta == "6" ~ "51-60%",
+    hinctnta == "7" ~ "61-70%", 
+    hinctnta == "8" ~ "71-80%", 
+    hinctnta == "9" ~ "81-90%", 
+    hinctnta == "10" ~ "91-100%", 
+    TRUE ~ NA
+  ))
 
+#create a variable for employment. if pdwrk == 1, then employed, if uempla == 1 
+#or uempli == 1, unemployed 
+
+ess7_a_subset$empl <- ifelse(ess7_a_subset$pdwrk == "0" | 
+                               ess7_a_subset$uempla == "1" | 
+                               ess7_a_subset$uempli == "1", "Unemployed", 
+                             ifelse(ess7_a_subset$pdwrk == "1", "Employed", 
+                                    NA))
+
+
+ess7_a_subset$icpart2 <- recode(ess7_a_subset$icpart2, "1" = "Yes", 
+                                "2" = "No")
 
 
 
