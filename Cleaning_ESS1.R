@@ -464,13 +464,27 @@ ess1_a_subset$crmvct <- recode(ess1_a_subset$crmvct, "1" = "Yes", "2" = "No")
 
 ess1_a_subset <- ess1_a_subset %>%
   mutate(hinctnt = case_when(
-    hinctnt %in% c("1", "2", "3", "4", "5", "6") ~ "< €24k",
-    hinctnt %in% c("7", "8") ~ "€24k < inc < €36k",
-    hinctnt == "9" ~ "€36k < inc < €60k",
-    hinctnt == "10" ~ "€60k < inc < €90k",
-    hinctnt %in% c("11", "12") ~ "> €90k",
-    TRUE ~ NA  
+    hinctnt == "1" ~ "0-10%", 
+    hinctnt %in% c("2", "3", "4") ~ "11-20%", 
+    hinctnt %in% c("5", "6") ~ "21-30%", 
+    hinctnt %in% c("7", "8") ~ "31-40%", 
+    hinctnt == 9 ~ "41-60%", 
+    hinctnt == 10 ~ "61-80%", 
+    hinctnt == 11 ~ "81-90%", 
+    hinctnt == 12 ~ "91-100%", 
+    TRUE ~ NA
   ))
+  
+
+#ess1_a_subset <- ess1_a_subset %>%
+ # mutate(hinctnt = case_when(
+    #hinctnt %in% c("1", "2", "3", "4", "5", "6") ~ "< €24k",
+    #hinctnt %in% c("7", "8") ~ "€24k < inc < €36k",
+    #hinctnt == "9" ~ "€36k < inc < €60k",
+    #hinctnt == "10" ~ "€60k < inc < €90k",
+    #hinctnt %in% c("11", "12") ~ "> €90k",
+    #TRUE ~ NA  
+ # ))
 
 #member of a group discriminated against in this country 
 
