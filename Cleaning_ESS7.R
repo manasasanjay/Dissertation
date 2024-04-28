@@ -166,7 +166,81 @@ ess7_sea <- ess7_sea %>%
     TRUE ~ NA
   ))
 
-  
+#rbind into one dataset 
+ess7_a_full <- rbind(ess7_ata, ess7_cha, ess7_cza, ess7_dka, ess7_esa, 
+                     ess7_fra, ess7_iea, ess7_nla, ess7_noa, ess7_pla, 
+                     ess7_pta, ess7_sea)
+
+#subset to include only the variables that we want 
+ess7_a_subset <- ess7_a_full[, c("name", "essround", "edition", "proddate", 
+                                 "idno", "cntry", "dweight", "pspwght", 
+                                 "pweight", "anweight", "region", "ppltrst", 
+                                 "pplfair", "pplhlp", "trstlgl", "trstplc", 
+                                 "trstplt", "trstprl", "lrscale", "stflife", 
+                                 "stfeco", "imsmetn", "imdfetn", "imbgeco", 
+                                 "imueclt", "crmvct", "aesfdrk", "dscrgrp", 
+                                 "dscrrce", "dscrntn", "dscrlng", "dscretn", 
+                                 "ctzcntr", "brncntr", "blgetmg", "qfimlng", 
+                                 "qfimwht", "qfimcmt", "pplstrd", "fclcntr", 
+                                 "dfegcf", "dfegcon", "dfeghbg", "smctmbe", 
+                                 "gndr", "agea", "domicil", "eduyrs", "hinctnta", 
+                                 "imptrad", "pdwrk", "uempla", "uempli", 
+                                 "icpart2")]
+
+#recode class 
+
+ess7_a_subset$ppltrst <- as.numeric(ess7_a_subset$ppltrst)
+ess7_a_subset$pplfair <- as.numeric(ess7_a_subset$pplfair)
+ess7_a_subset$pplhlp <- as.numeric(ess7_a_subset$pplhlp)
+ess7_a_subset$trstlgl <- as.numeric(ess7_a_subset$trstlgl)
+ess7_a_subset$trstplc <- as.numeric(ess7_a_subset$trstplc)
+ess7_a_subset$trstplt <- as.numeric(ess7_a_subset$trstplt)
+ess7_a_subset$trstprl <- as.numeric(ess7_a_subset$trstprl)
+ess7_a_subset$lrscale <- as.numeric(ess7_a_subset$lrscale)
+ess7_a_subset$stflife <- as.numeric(ess7_a_subset$stflife)
+ess7_a_subset$stfeco <- as.numeric(ess7_a_subset$stfeco)
+ess7_a_subset$imsmetn <- as.numeric(ess7_a_subset$imsmetn)
+ess7_a_subset$imdfetn <- as.numeric(ess7_a_subset$imdfetn)
+ess7_a_subset$imbgeco <- as.numeric(ess7_a_subset$imbgeco)
+ess7_a_subset$imueclt <- as.numeric(ess7_a_subset$imueclt)
+ess7_a_subset$crmvct <- as.character(ess7_a_subset$crmvct)
+ess7_a_subset$aesfdrk <- as.character(ess7_a_subset$aesfdrk)
+ess7_a_subset$dscrgrp <- as.character(ess7_a_subset$dscrgrp)
+ess7_a_subset$dscrrce <- as.character(ess7_a_subset$dscrrce)
+ess7_a_subset$dscrntn <- as.character(ess7_a_subset$dscrntn)
+ess7_a_subset$dscrlng <- as.character(ess7_a_subset$dscrlng)
+ess7_a_subset$dscretn <- as.character(ess7_a_subset$dscretn)
+ess7_a_subset$ctzcntr <- as.character(ess7_a_subset$ctzcntr)
+ess7_a_subset$brncntr <- as.character(ess7_a_subset$brncntr)
+ess7_a_subset$blgetmg <- as.character(ess7_a_subset$blgetmg)
+ess7_a_subset$qfimlng <- as.numeric(ess7_a_subset$qfimlng)
+ess7_a_subset$qfimwht <- as.numeric(ess7_a_subset$qfimwht)
+ess7_a_subset$qfimcmt <- as.numeric(ess7_a_subset$qfimcmt)
+ess7_a_subset$pplstrd <- as.numeric(ess7_a_subset$pplstrd)
+ess7_a_subset$fclcntr <- as.numeric(ess7_a_subset$fclcntr)
+ess7_a_subset$dfegcf <- as.character(ess7_a_subset$dfegcf)
+ess7_a_subset$dfegcon <- as.character(ess7_a_subset$dfegcon)
+ess7_a_subset$dfeghbg <- as.numeric(ess7_a_subset$dfeghbg)
+ess7_a_subset$smctmbe <- as.character(ess7_a_subset$smctmbe)
+ess7_a_subset$gndr <- as.character(ess7_a_subset$gndr)
+ess7_a_subset$domicil <- as.character(ess7_a_subset$domicil)
+ess7_a_subset$hinctnta <- as.character(ess7_a_subset$hinctnta)
+ess7_a_subset$imptrad <- as.numeric(ess7_a_subset$imptrad)
+ess7_a_subset$pdwrk <- as.character(ess7_a_subset$pdwrk)
+ess7_a_subset$uempla <- as.character(ess7_a_subset$uempla)
+ess7_a_subset$uempli <- as.character(ess7_a_subset$uempli)
+ess7_a_subset$icpart2 <- as.character(ess7_a_subset$icpart2)
+
+
+
+
+
+
+
+
+
+
+
 
 
 
