@@ -231,6 +231,110 @@ ess7_a_subset$uempla <- as.character(ess7_a_subset$uempla)
 ess7_a_subset$uempli <- as.character(ess7_a_subset$uempli)
 ess7_a_subset$icpart2 <- as.character(ess7_a_subset$icpart2)
 
+#create a social trust variable, a mean of ppltrst, pplfair, and pplhlp including
+#only respondents who have responded to at least 2 out of the three questions 
+
+
+ess7_a_subset$trst_resp_no <-  rowSums(!is.na(ess7_a_subset[, c("ppltrst", 
+                                                                "pplfair", 
+                                                                "pplhlp")]))
+
+ess7_a_subset$soc_trst <- ifelse(ess7_a_subset$trst_resp_no >= 2, 
+                                 rowMeans(ess7_a_subset[, c("ppltrst", 
+                                                            "pplfair", 
+                                                            "pplhlp")], 
+                                          na.rm = TRUE), NA)
+#create an institutional trust variable, a mean of trstlgl, trstplc, trstplt, 
+#and trstprl including only respondents who have responded to at least 2 out of 
+#the 4 questions 
+
+ess7_a_subset$instrst_resp_no <-  rowSums(!is.na(ess7_a_subset[, c("trstlgl", 
+                                                                   "trstplc", 
+                                                                   "trstplt", 
+                                                                   "trstprl")]))
+
+ess7_a_subset$ins_trst <- ifelse(ess7_a_subset$instrst_resp_no >= 2, 
+                                 rowMeans(ess7_a_subset[, c("trstlgl", 
+                                                            "trstplc", 
+                                                            "trstplt", 
+                                                            "trstprl")], 
+                                          na.rm = TRUE), NA)
+
+#recode categorical variables 
+
+
+#respondent or household member victim of burglary/assault in the last 5 years
+ess7_a_subset$crmvct <- recode(ess7_a_subset$crmvct, "1" = "Yes", 
+                               "2" = "No")
+
+#Feeling of safety walking alone in local area after dark 
+ess7_a_subset$aesfdrk <- recode(ess7_a_subset$aesfdrk, "1" = "Very safe", 
+                                "2" = "Safe", "3" = "Unsafe", 
+                                "4" = "Very unsafe")
+
+#Member of group discriminated against in this country (individual's response)
+ess7_a_subset$dscrgrp <- recode(ess7_a_subset$dscrgrp, "1" = "Yes", 
+                                "2" = "No")
+
+#Discrimination of respondent's group: colour or race
+ess7_a_subset$dscrrce <- recode(ess7_a_subset$dscrrce, "0" = "Not marked", 
+                                "1" = "Marked")
+
+#Discrimination of respondent's group: nationality 
+ess7_a_subset$dscrntn <- recode(ess7_a_subset$dscrntn, "0" = "Not marked", 
+                                "1" = "Marked")
+
+#Discrimination of respondent's group: language 
+ess7_a_subset$dscrlng <- recode(ess7_a_subset$dscrlng, "0" = "Not marked", 
+                                "1" = "Marked")
+
+#Discrimination of respondent's group: ethnicity 
+ess7_a_subset$dscretn <- recode(ess7_a_subset$dscretn, "0" = "Not marked", 
+                                "1" = "Marked")
+
+#citizen of country 
+ess7_a_subset$ctzcntr <- recode(ess7_a_subset$ctzcntr, "1" = "Yes", 
+                                "2" = "No")
+
+#born in the country 
+ess7_a_subset$brncntr <- recode(ess7_a_subset$brncntr, "1" = "Yes", 
+                                "2" = "No")
+
+#belonging to minority ethnic group in country 
+ess7_a_subset$blgetmg <- recode(ess7_a_subset$blgetmg, "1" = "Yes", 
+                                "2" = "No")
+
+#Different race or ethnic group: have any close friends 
+ess7_a_subset$dfegcf <- recode(ess7_a_subset$dfegcf, "1" = "Yes, several", 
+                               "2" = "Yes, a few", "3" = "No, none at all")
+
+#different race or ethnic group: contact, how often 
+ess7_a_subset$dfegcon <- recode(ess7_a_subset$dfegcon, "1" = "Never", 
+                                "2" = "Less than once a month", 
+                                "3" = "Once a month", 
+                                "4" = "Several times a month", 
+                                "5" = "Once a week", 
+                                "6" = "Several times a week", 
+                                "7" = "Every day")
+
+#some cultures: much better or all equal 
+ess7_a_subset$smctmbe <- recode(ess7_a_subset$smctmbe, 
+                                "1" = "Some cultures are much better than others", 
+                                "2" = "All cultures are equal")
+
+#gender 
+ess7_a_subset$gndr <- recode(ess7_a_subset$gndr, "1" = "Male", 
+                             "2" = "Female")
+
+#domicile (respondent's description)
+ess7_a_subset$domicil <- recode(ess7_a_subset$domicil, "1" = "A big city", 
+                                "2" = "Suburbs or outskirts of a big city", 
+                                "3" = "Town or small city", 
+                                "4" = "Country village", 
+                                "5" = "Farm or home in countryside")
+
+#household's total net income, all sources 
+ess7_a_subset
 
 
 
