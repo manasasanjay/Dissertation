@@ -365,10 +365,7 @@ ess7_a_subset$icpart2 <- recode(ess7_a_subset$icpart2, "1" = "Yes",
 #subset and scale all variables for PCA
 ess7_PCA1_subset <- ess7_a_subset
 
-#Allow many/few immigrants of the same race/ethnicity as the majority 
-ess7_PCA1_subset <- ess7_PCA1_subset %>%
-  mutate(imsmetn_std = scale(imsmetn))
-
+#just standardise your numerical variables, leave categorical as is. 
 
 
 
