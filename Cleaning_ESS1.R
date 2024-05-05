@@ -527,16 +527,29 @@ ess1_PCA1_subset$imueclt_std <- scale(ess1_PCA1_subset$imueclt)
 mean(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #essentually 0 
 sd(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #1
 
+png(file = "Dissertation GitHub/figures/corrplot1.png",
+    width = 6000, height = 4000, res = 650)
+
+corrplot.mixed(
+  cor(ess1_PCA1_subset[, c("imsmetn", "imdfetn", "qfimwht_std", "qfimcmt_std",
+                           "qfimlng_std", "imueclt_std", "pplstrd", "imptrad")],
+      use="complete.obs"),
+  upper="ellipse",tl.cex=0.3)
+
+dev.off()
 
 
+#remove NAs
+ess1_PCA1_subset <- ess1_PCA1_subset[complete.cases(ess1_PCA1_subset[,
+                        c("imsmetn", "imdfetn", "qfimwht_std", "qfimcmt_std",
+                        "qfimlng_std", "imueclt_std", "pplstrd", "imptrad")]),]
 
+pcafit <- prcomp(ess1_PCA1_subset[, c("imsmetn", "imdfetn", "qfimwht_std", 
+                                      "qfimcmt_std",
+                                      "qfimlng_std", "imueclt_std", "pplstrd")], 
+                 scale. = TRUE)
+summary(pcafit)
 
-
-
-
-
-
-
-
+pcafit
 
 
