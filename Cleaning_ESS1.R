@@ -33,9 +33,6 @@ ess1_esa <- ess1[ess1$cntry == "ES", ]
 #France 
 ess1_fra <- ess1[ess1$cntry == "FR", ]
 
-#Hungary 
-ess1_hua <- ess1[ess1$cntry == "HU", ]
-
 #Ireland 
 ess1_iea <- ess1[ess1$cntry == "IE", ]
 
@@ -164,19 +161,6 @@ ess1_fra <- ess1_fra %>%
     TRUE ~ NA
   ))
 
-#Hungary 
-ess1_hua <- ess1_hua %>% 
-  mutate(reg_code = case_when(
-    regionhu == 1 ~ "HU10", 
-    regionhu == 2 ~ "HU21", 
-    regionhu == 3 ~ "HU22", 
-    regionhu == 4 ~ "HU23", 
-    regionhu == 5 ~ "HU31", 
-    regionhu == 6 ~ "HU32", 
-    regionhu == 7 ~ "HU33", 
-    TRUE ~ NA
-  ))
-
 #Ireland 
 ess1_iea <- ess1_iea %>% 
   mutate(reg_code = case_when(
@@ -299,7 +283,7 @@ ess1_sea <-ess1_sea %>%
 
 #rbind into one dataset 
 ess1_a_full <- rbind(ess1_ata, ess1_cha, ess1_cza, ess1_dka, ess1_esa, ess1_fra, 
-                     ess1_hua, ess1_iea, ess1_nla, ess1_noa, ess1_pla, ess1_pta, 
+                     ess1_iea, ess1_nla, ess1_noa, ess1_pla, ess1_pta, 
                      ess1_sea)
 
 #subset to include only the variables you want 
@@ -513,74 +497,36 @@ ess1_a_subset$blgetmg <- recode(ess1_a_subset$blgetmg, "1" = "Yes",
                                 "2" = "No")
 
 
-#Method 1: standardise, run PCA
-#standardise all the variables to be used in the PCA
+#Method 1: Standardise, run PCA. Only standardise numerical variables, and only 
+#use categorical variables that have equal intervals between levels. 
 
-ess1_PCA1_subset <- ess1_a_subset
+ess1_PCA1_subset <- ess1_a_subset[, c("name", "essround", "edition", "proddate", 
+                                      "idno", "cntry", "reg_code", "dweight", 
+                                      "pspwght", "pweight", "anweight", 
+                                      "imsmetn", "imdfetn", "qfimwht", "qfimcmt", 
+                                   "qfimlng", "imueclt", "pplstrd", "imptrad")]
 
-#Allow many/few immigrants of same race/ethnic group as majority
-ess1_PCA1_subset <- ess1_PCA1_subset %>%
-  mutate(imsmetn_std = scale(imsmetn))
-
-#check mean & sd 
-mean(ess1_PCA1_subset$imsmetn_std, na.rm = TRUE) #v close to 0
-sd(ess1_PCA1_subset$imsmetn_std, na.rm = TRUE) #1 
-
-#Allow many/few immigrants of different race/ethnic group from majority 
-ess1_PCA1_subset <- ess1_PCA1_subset %>%
-  mutate(imdfetn_std = scale(imdfetn))
-
-#check mean & sd 
-mean(ess1_PCA1_subset$imdfetn_std, na.rm = TRUE) #v close to 0
-sd(ess1_PCA1_subset$imdfetn_std, na.rm = TRUE) #1 
-
-#Qualification for immigration: be white 
-ess1_PCA1_subset <- ess1_PCA1_subset %>%
-  mutate(qfimwht_std = scale(qfimwht))
-
-#check mean and sd 
-mean(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #v close to 0 
+#standardise numerical variables 
+#qualification for immigration: be white 
+ess1_PCA1_subset$qfimwht_std <- scale(ess1_PCA1_subset$qfimwht)
+mean(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #close to 0
 sd(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #1
 
-#Qualification for immigration: be committed to way of life in country 
-ess1_PCA1_subset <- ess1_PCA1_subset %>%
-  mutate(qfimcmt_std = scale(qfimcmt))
-
-#check mean and sd 
-mean(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #v close to 0 
+##qualification for immigration, be committed to way of life in country 
+ess1_PCA1_subset$qfimcmt_std <- scale(ess1_PCA1_subset$qfimcmt)
+mean(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #basically 0 
 sd(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #1
 
-#Qualification for immigration: speak official language
-ess1_PCA1_subset <- ess1_PCA1_subset %>%
-  mutate(qfimlng_std = scale(qfimlng))
-
-#check mean and sd 
-mean(ess1_PCA1_subset$qfimlng_std, na.rm = TRUE) #v close to 0 
+#qualification for immigration; speak the language 
+ess1_PCA1_subset$qfimlng_std <- scale(ess1_PCA1_subset$qfimlng)
+mean(ess1_PCA1_subset$qfimlng_std, na.rm = TRUE)  #basically 0 
 sd(ess1_PCA1_subset$qfimlng_std, na.rm = TRUE) #1
 
-#Country's cultural life undermined or enriched by immigrants 
-ess1_PCA1_subset <- ess1_PCA1_subset %>%
-  mutate(imueclt_std = scale(imueclt))
-
-#check mean and sd 
-mean(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #super close to 0 
+#country's cultural life undermined or enriched by immigrants 
+ess1_PCA1_subset$imueclt_std <- scale(ess1_PCA1_subset$imueclt)
+mean(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #essentually 0 
 sd(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #1
 
-#Better for a country if everyone shares customs and traditions 
-ess1_PCA1_subset <- ess1_PCA1_subset %>%
-  mutate(pplstrd_std = scale(pplstrd))
-
-#check mean and sd 
-mean(ess1_PCA1_subset$pplstrd_std, na.rm = TRUE) #v close to 0 
-sd(ess1_PCA1_subset$pplstrd_std, na.rm = TRUE) #1
-
-#important to follow traditions and customs 
-ess1_PCA1_subset <- ess1_PCA1_subset %>%
-  mutate(imptrad_std = scale(imptrad))
-
-#check mean and sd 
-mean(ess1_PCA1_subset$imptrad_std, na.rm = TRUE) #v close to 0 
-sd(ess1_PCA1_subset$imptrad_std, na.rm = TRUE) #1
 
 
 
