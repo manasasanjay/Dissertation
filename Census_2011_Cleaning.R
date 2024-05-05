@@ -165,7 +165,115 @@ class(switzerland_11$Ocna)
 #ah i see stupid oceania has an na 
 switzerland_11$Ocna <- as.numeric(switzerland_11$Ocna)
 
+#calculate ethnic share for each group and HHI 
+#HHI = sum(eth_share^2)
 
+#function to compute HHI 
 
+add_HHI_column <- function(data) {
+  start_col <- 3  
+  end_col <- 10   
+  total <- rowSums(data[, start_col:end_col], na.rm = TRUE)
+  
+  # Calculate the squared proportion of each variable and sum them up
+  HHI <- rowSums((data[, start_col:end_col] / total)^2, na.rm = TRUE)
+  
+  # Add the HHI values as a new column to the dataset
+  data$HHI <- HHI
+  return(data)
+}
 
+#austria 
+austria_11 <- add_HHI_column(austria_11)
+
+#czechia
+czechia_11 <- add_HHI_column(czechia_11)
+
+#denmark 
+denmark_11 <- add_HHI_column(denmark_11)
+
+#france 
+france_11 <- add_HHI_column(france_11)
+
+#ireland 
+ireland_11 <- add_HHI_column(ireland_11)
+
+#netherlands
+netherlands_11 <- add_HHI_column(netherlands_11)
+
+#norway 
+norway_11 <- add_HHI_column(norway_11)
+
+#poland 
+poland_11 <- add_HHI_column(poland_11)
+
+#portugal 
+portugal_11 <- add_HHI_column(portugal_11)
+
+#spain
+spain_11 <- add_HHI_column(spain_11)
+
+#sweden 
+sweden_11 <- add_HHI_column(sweden_11)
+
+#switzerland 
+switzerland_11 <- add_HHI_column(switzerland_11)
+
+#Ethnic fractionalisation index = 1- HHI
+
+#austria 
+austria_11$Eth_Frac <- (1-austria_11$HHI)
+
+#czechia 
+czechia_11$Eth_Frac <- (1-czechia_11$HHI)
+
+#denmark 
+denmark_11$Eth_Frac <- (1-denmark_11$HHI)
+
+#france 
+france_11$Eth_Frac <- (1-france_11$HHI)
+
+#ireland 
+ireland_11$Eth_Frac <- (1-ireland_11$HHI)
+
+#netherlands 
+netherlands_11$Eth_Frac <- (1-netherlands_11$HHI)
+
+#norway 
+norway_11$Eth_Frac <- (1-norway_11$HHI)
+
+#poland 
+poland_11$Eth_Frac <- (1-poland_11$HHI)
+
+#portugal 
+portugal_11$Eth_Frac <- (1-portugal_11$HHI)
+
+#spain
+spain_11$Eth_Frac <- (1-spain_11$HHI)
+
+#sweden 
+sweden_11$Eth_Frac <- (1-sweden_11$HHI)
+
+#switzerland 
+switzerland_11$Eth_Frac <- (1-switzerland_11$HHI)
+
+#put into a single dataset 
+
+census_full_11 <- rbind(austria_11, czechia_11, denmark_11, france_11, 
+                       ireland_11, netherlands_11, norway_11, poland_11, 
+                       portugal_11, spain_11, sweden_11, switzerland_11)
+
+#------------------------------------------------------------------------------#
+#recode NA variables from controls to NA 
+
+census_2011_controls <- census_2011_controls %>%
+  mutate(across(everything(), ~ ifelse(. == "NA", NA, .)))
+
+#merge the census data and the controls by region code
+#but first rename columns 
+colnames(census_2011_controls) <- c("country", "reg_code", "reg", "avgeduyrs", 
+                                    "res_turn", "sin_par_hh", "unemp_rate")
+
+merged_census_2011 <- merge(census_full_11, census_2011_controls, by = "reg_code", 
+                            all.x = TRUE)
 
