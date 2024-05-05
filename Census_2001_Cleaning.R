@@ -260,7 +260,7 @@ switzerland_1$Eth_Frac <- (1-switzerland_1$HHI)
 #put into a single dataset 
 
 census_full_1 <- rbind(austria_1, czechia_1, denmark_1, france_1, 
-                       hungary_1, ireland_1, netherlands_1, norway_1, poland_1, 
+                      ireland_1, netherlands_1, norway_1, poland_1, 
                        portugal_1, spain_1, sweden_1, switzerland_1)
 
 #------------------------------------------------------------------------------#
@@ -269,8 +269,13 @@ census_full_1 <- rbind(austria_1, czechia_1, denmark_1, france_1,
 census_2001_controls <- census_2001_controls %>%
   mutate(across(everything(), ~ ifelse(. == "NA", NA, .)))
 
+#merge the census data and the controls by region code
+#but first rename columns 
+colnames(census_2001_controls) <- c("country", "reg_code", "reg", "avgeduyrs", 
+                                    "res_turn", "sin_par_hh", "unemp_rate")
 
-
+merged_census_2001 <- merge(census_full_1, census_2001_controls, by = "reg_code", 
+                          all.x = TRUE)
 
 
 
