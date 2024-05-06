@@ -504,7 +504,8 @@ ess1_PCA1_subset <- ess1_a_subset[, c("name", "essround", "edition", "proddate",
                                       "idno", "cntry", "reg_code", "dweight", 
                                       "pspwght", "pweight", "anweight", 
                                       "imsmetn", "imdfetn", "qfimwht", "qfimcmt", 
-                                   "qfimlng", "imueclt", "pplstrd", "imptrad")]
+                                   "qfimlng", "imueclt", "pplstrd", "imptrad", 
+                                   "dclmig")]
 
 #standardise numerical variables 
 #qualification for immigration: be white 
@@ -544,12 +545,45 @@ ess1_PCA1_subset <- ess1_PCA1_subset[complete.cases(ess1_PCA1_subset[,
                         c("imsmetn", "imdfetn", "qfimwht_std", "qfimcmt_std",
                         "qfimlng_std", "imueclt_std", "pplstrd", "imptrad")]),]
 
-pcafit <- prcomp(ess1_PCA1_subset[, c("imsmetn", "imdfetn", "qfimwht_std", 
+ess1_IRT1_subset <- ess1_PCA1_subset[complete.cases(ess1_PCA1_subset[,
+                    c("qfimwht_std", "qfimcmt_std",
+                   "qfimlng_std", "imueclt_std", "pplstrd")]),]
+
+
+pcafit <- prcomp(ess1_PCA1_subset[, c("qfimwht_std", 
                                       "qfimcmt_std",
                                       "qfimlng_std", "imueclt_std", "pplstrd")], 
                  scale. = TRUE)
 summary(pcafit)
 
 pcafit
+
+cor(pcafit$x[,1], ess1_PCA1_subset$imdfetn)
+cor(pcafit$x[,1], ess1_PCA1_subset$imptrad)
+cor(pcafit$x[,1], ess1_PCA1_subset$imsmetn)
+cor(pcafit$x[,2], ess1_PCA1_subset$imsmetn)
+cor(pcafit$x[,2], ess1_PCA1_subset$imdfetn)
+
+hist(rowSums(ess1_IRT1_subset[, c("qfimwht_std", 
+                                  "qfimcmt_std",
+                                  "qfimlng_std", "imueclt_std", "pplstrd")]),
+     xlab="IDK",main="",
+     br=seq(-8,12,1), freq=FALSE)
+
+#okay how about you first rescale everything to be on a scale of 1-5
+
+
+range(rowSums(ess1_IRT1_subset[, c("qfimwht_std", 
+                                   "qfimcmt_std",
+                                   "qfimlng_std", "imueclt_std", "pplstrd")]))
+
+
+
+
+
+
+
+
+
 
 
