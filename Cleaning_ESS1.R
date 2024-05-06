@@ -7,6 +7,10 @@ library(ggplot2)
 library(GGally)
 library(ggthemes)
 library(mosaic)
+library(ltm)
+library(kableExtra)
+library(magrittr)
+
 
 #load survey data 
 ess1 <- read_dta("Desktop/PPE/DISS/ESS1e06_7/ESS1e06_7.dta")
@@ -546,8 +550,9 @@ ess1_PCA1_subset <- ess1_PCA1_subset[complete.cases(ess1_PCA1_subset[,
                         "qfimlng_std", "imueclt_std", "pplstrd", "imptrad")]),]
 
 ess1_IRT1_subset <- ess1_PCA1_subset[complete.cases(ess1_PCA1_subset[,
-                    c("qfimwht_std", "qfimcmt_std",
-                   "qfimlng_std", "imueclt_std", "pplstrd")]),]
+                    c("qfimwht", "qfimcmt",
+                   "qfimlng", "imueclt", "pplstrd", 
+                   "imptrad")]),]
 
 
 pcafit <- prcomp(ess1_PCA1_subset[, c("qfimwht_std", 
@@ -564,23 +569,69 @@ cor(pcafit$x[,1], ess1_PCA1_subset$imsmetn)
 cor(pcafit$x[,2], ess1_PCA1_subset$imsmetn)
 cor(pcafit$x[,2], ess1_PCA1_subset$imdfetn)
 
-hist(rowSums(ess1_IRT1_subset[, c("qfimwht_std", 
-                                  "qfimcmt_std",
-                                  "qfimlng_std", "imueclt_std", "pplstrd")]),
+hist(rowSums(ess1_IRT1_subset[, c("qfimwht", 
+                                  "qfimcmt",
+                                  "qfimlng", "imueclt", "pplstrd", 
+                                  "imptrad")]),
      xlab="IDK",main="",
-     br=seq(-8,12,1), freq=FALSE)
+     br=seq(1,47,1), freq=FALSE)
 
 #okay how about you first rescale everything to be on a scale of 1-5
 
 
-range(rowSums(ess1_IRT1_subset[, c("qfimwht_std", 
-                                   "qfimcmt_std",
-                                   "qfimlng_std", "imueclt_std", "pplstrd")]))
+range(rowSums(ess1_IRT1_subset[, c("qfimwht", 
+                                   "qfimcmt",
+                                   "qfimlng", "imueclt", "pplstrd", 
+                                   "imptrad")]))
 
 
+#Trying ordinal IRT
+grm_fit <- grm(ess1_IRT1_subset[, c("qfimwht", 
+                                    "qfimcmt",
+                                    "qfimlng", "imueclt", "pplstrd", 
+                                    "imptrad")])
+grm_fit
+par(mfrow=c(2,5))
+plot(grm_fit)
+
+grm_scores <- factor.scores.grm(grm_fit,resp.patterns=ess1_IRT1_subset[, 
+                                                    c("qfimwht", 
+                                                    "qfimcmt",
+                                            "qfimlng", "imueclt", "pplstrd", 
+                                            "imptrad")])
+out2 <- data.frame(scores2 = grm_scores$score.dat$z1,num_correct = 
+                     rowSums(ess1_IRT1_subset[, 
+                   c("qfimwht", 
+                   "qfimcmt",
+                   "qfimlng", "imueclt", "pplstrd", "imptrad")]))
+
+# BaseR
+# plot(jitter(out2$num_correct),out2$scores2,
+#      xlab="Correct Responses",
+#      ylab="Ordered IRT Score",
+#      pch=16,col=rgb(0,0,0,0.25))
+
+# ggplot2
+ggplot(out2, aes(x=jitter(num_correct),y=scores2)) +
+  geom_point(size=2,alpha=.5) +
+  scale_x_continuous("Correct Responses",breaks = 1:47) + 
+  scale_y_continuous("Ordered IRT Score",breaks = seq(-3,3,0.5)) +
+  theme_clean() +
+  theme(plot.background = element_rect(color=NA))
 
 
+range(out2$scores2)
 
+cor(out2$scores2, ess1_IRT1_subset$imsmetn)
+
+cor(out2$scores2, ess1_IRT1_subset$imdfetn)
+
+m1 <- lm(ess1_IRT1_subset$imdfetn ~ out2$scores2)
+summary(m1)
+
+
+m2 <- lm(ess1_IRT1_subset$imsmetn ~ out2$scores2)
+summary(m2)
 
 
 
