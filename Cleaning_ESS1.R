@@ -290,23 +290,25 @@ ess1_a_full <- rbind(ess1_ata, ess1_cha, ess1_cza, ess1_dka, ess1_esa, ess1_fra,
                      ess1_iea, ess1_nla, ess1_noa, ess1_pla, ess1_pta, 
                      ess1_sea)
 
+ess1_a_subset <- ess1_a_full 
+
 #subset to include only the variables you want 
-ess1_a_subset <- ess1_a_full[, c("name", "essround", "edition", "proddate", 
-                                 "idno", "cntry", "reg_code","dweight", "pspwght", 
-                                 "pweight", "anweight", "regionat", "regioach", 
-                                 "regioncz", "regiondk", "regiones", "regionfr", 
-                                 "regionhu", "regionie", "regionnl", "regionno", 
-                                 "regionpl", "regionpt", "regionse", "ppltrst", 
-                                 "pplfair", "pplhlp", "lrscale", "stflife", 
-                                 "stfeco", "dclmig", "aesfdrk", "ctzcntr", 
-                                 "ctzship", "brncntr", "livecntr", "trstlgl", 
-                                 "trstplc", "trstplt", "trstprl", "imsmetn", 
-                                 "imdfetn", "qfimwht", "qfimcmt", "qfimlng", "imueclt", 
-                                 "idetalv", "pplstrd", "imgfrnd", "imgclg", 
-                                 "yrlvdae", "empl", "gndr", "agea", "domicil", 
-                                 "eduyrs", "hinctnt", "lvgptn", "imptrad", 
-                                 "crmvct", "imbgeco", "dscrgrp", "dscrrce", 
-                                 "dscrntn", "dscrlng", "dscretn", "blgetmg")]
+#ess1_a_subset <- ess1_a_full[, c("name", "essround", "edition", "proddate", 
+                                # "idno", "cntry", "reg_code","dweight", "pspwght", 
+                                 #"pweight", "anweight", "regionat", "regioach", 
+                                 #"regioncz", "regiondk", "regiones", "regionfr", 
+                                 #"regionhu", "regionie", "regionnl", "regionno", 
+                                 #"regionpl", "regionpt", "regionse", "ppltrst", 
+                                 #"pplfair", "pplhlp", "lrscale", "stflife", 
+                                # "stfeco", "dclmig", "aesfdrk", "ctzcntr", 
+                                # "ctzship", "brncntr", "livecntr", "trstlgl", 
+                                # "trstplc", "trstplt", "trstprl", "imsmetn", 
+                                # "imdfetn", "qfimwht", "qfimcmt", "qfimlng", "imueclt", 
+                                # "idetalv", "pplstrd", "imgfrnd", "imgclg", 
+                                # "yrlvdae", "empl", "gndr", "agea", "domicil", 
+                                # "eduyrs", "hinctnt", "lvgptn", "imptrad", 
+                                # "crmvct", "imbgeco", "dscrgrp", "dscrrce", 
+                                # "dscrntn", "dscrlng", "dscretn", "blgetmg")]
 
 #recode class if necessary 
 ess1_a_subset$ppltrst <- as.numeric(ess1_a_subset$ppltrst)
@@ -352,6 +354,21 @@ ess1_a_subset$dscrntn <- as.character(ess1_a_subset$dscrntn)
 ess1_a_subset$dscrlng <- as.character(ess1_a_subset$dscrlng)
 ess1_a_subset$dscretn <- as.character(ess1_a_subset$dscretn)
 ess1_a_subset$blgetmg <- as.character(ess1_a_subset$blgetmg)
+ess1_a_subset$qfimchr <- as.numeric(ess1_a_subset$qfimchr)
+ess1_a_subset$imtcjob <- as.numeric(ess1_a_subset$imtcjob)
+ess1_a_subset$imbleco <- as.numeric(ess1_a_subset$imbleco)
+ess1_a_subset$imwbcnt <- as.numeric(ess1_a_subset$imwbcnt)
+ess1_a_subset$imwbcrm <- as.numeric(ess1_a_subset$imwbcrm)
+ess1_a_subset$imdetbs <- as.numeric(ess1_a_subset$imdetbs)
+ess1_a_subset$imsetbs <- as.numeric(ess1_a_subset$imsetbs)
+ess1_a_subset$imdetmr <- as.numeric(ess1_a_subset$imdetmr)
+ess1_a_subset$comnlng <- as.numeric(ess1_a_subset$comnlng)
+ess1_a_subset$rlgoptp <- as.numeric(ess1_a_subset$rlgoptp)
+ess1_a_subset$imprlg <- as.numeric(ess1_a_subset$imprlg)
+ess1_a_subset$dvrcdev <- as.numeric(ess1_a_subset$dvrcdev)
+ess1_a_subset$ipudrst <- as.numeric(ess1_a_subset$ipudrst)
+
+
 
 #create a social trust variable, a mean of ppltrst, pplfair, and pplhlp including
 #only respondents who have responded to at least 2 out of the three questions 
@@ -501,37 +518,6 @@ ess1_a_subset$blgetmg <- recode(ess1_a_subset$blgetmg, "1" = "Yes",
                                 "2" = "No")
 
 
-#Method 1: Standardise, run PCA. Only standardise numerical variables, and only 
-#use categorical variables that have equal intervals between levels. 
-
-ess1_PCA1_subset <- ess1_a_subset[, c("name", "essround", "edition", "proddate", 
-                                      "idno", "cntry", "reg_code", "dweight", 
-                                      "pspwght", "pweight", "anweight", 
-                                      "imsmetn", "imdfetn", "qfimwht", "qfimcmt", 
-                                   "qfimlng", "imueclt", "pplstrd", "imptrad", 
-                                   "dclmig")]
-
-#standardise numerical variables 
-#qualification for immigration: be white 
-ess1_PCA1_subset$qfimwht_std <- scale(ess1_PCA1_subset$qfimwht)
-mean(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #close to 0
-sd(ess1_PCA1_subset$qfimwht_std, na.rm = TRUE) #1
-
-##qualification for immigration, be committed to way of life in country 
-ess1_PCA1_subset$qfimcmt_std <- scale(ess1_PCA1_subset$qfimcmt)
-mean(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #basically 0 
-sd(ess1_PCA1_subset$qfimcmt_std, na.rm = TRUE) #1
-
-#qualification for immigration; speak the language 
-ess1_PCA1_subset$qfimlng_std <- scale(ess1_PCA1_subset$qfimlng)
-mean(ess1_PCA1_subset$qfimlng_std, na.rm = TRUE)  #basically 0 
-sd(ess1_PCA1_subset$qfimlng_std, na.rm = TRUE) #1
-
-#country's cultural life undermined or enriched by immigrants 
-ess1_PCA1_subset$imueclt_std <- scale(ess1_PCA1_subset$imueclt)
-mean(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #essentually 0 
-sd(ess1_PCA1_subset$imueclt_std, na.rm = TRUE) #1
-
 png(file = "Dissertation GitHub/figures/corrplot1.png",
     width = 6000, height = 4000, res = 650)
 
@@ -544,15 +530,10 @@ corrplot.mixed(
 dev.off()
 
 
-#remove NAs
-ess1_PCA1_subset <- ess1_PCA1_subset[complete.cases(ess1_PCA1_subset[,
-                        c("imsmetn", "imdfetn", "qfimwht_std", "qfimcmt_std",
-                        "qfimlng_std", "imueclt_std", "pplstrd", "imptrad")]),]
-
-ess1_IRT1_subset <- ess1_PCA1_subset[complete.cases(ess1_PCA1_subset[,
+ess1_IRT1_subset <- ess1_a_subset[complete.cases(ess1_a_subset[,
                     c("qfimwht", "qfimcmt",
-                   "qfimlng", "imueclt", "pplstrd", 
-                   "imptrad")]),]
+                   "qfimlng", "pplstrd"
+                   )]),]
 
 
 pcafit <- prcomp(ess1_PCA1_subset[, c("qfimwht_std", 
@@ -571,39 +552,39 @@ cor(pcafit$x[,2], ess1_PCA1_subset$imdfetn)
 
 hist(rowSums(ess1_IRT1_subset[, c("qfimwht", 
                                   "qfimcmt",
-                                  "qfimlng", "imueclt", "pplstrd", 
-                                  "imptrad")]),
+                                  "qfimlng", "pplstrd"
+                                 )]),
      xlab="IDK",main="",
-     br=seq(1,47,1), freq=FALSE)
+     br=seq(1,35,1), freq=FALSE)
 
 #okay how about you first rescale everything to be on a scale of 1-5
 
 
 range(rowSums(ess1_IRT1_subset[, c("qfimwht", 
                                    "qfimcmt",
-                                   "qfimlng", "imueclt", "pplstrd", 
-                                   "imptrad")]))
+                                   "qfimlng", "pplstrd"
+                                   )]))
 
 
 #Trying ordinal IRT
 grm_fit <- grm(ess1_IRT1_subset[, c("qfimwht", 
                                     "qfimcmt",
-                                    "qfimlng", "imueclt", "pplstrd", 
-                                    "imptrad")])
+                                    "qfimlng", "pplstrd"
+                                    )])
 grm_fit
-par(mfrow=c(2,5))
+par(mfrow=c(3,2))
 plot(grm_fit)
 
 grm_scores <- factor.scores.grm(grm_fit,resp.patterns=ess1_IRT1_subset[, 
                                                     c("qfimwht", 
                                                     "qfimcmt",
-                                            "qfimlng", "imueclt", "pplstrd", 
-                                            "imptrad")])
+                                            "qfimlng", "pplstrd" 
+                                            )])
 out2 <- data.frame(scores2 = grm_scores$score.dat$z1,num_correct = 
                      rowSums(ess1_IRT1_subset[, 
                    c("qfimwht", 
                    "qfimcmt",
-                   "qfimlng", "imueclt", "pplstrd", "imptrad")]))
+                   "qfimlng", "pplstrd")]))
 
 # BaseR
 # plot(jitter(out2$num_correct),out2$scores2,
@@ -614,7 +595,7 @@ out2 <- data.frame(scores2 = grm_scores$score.dat$z1,num_correct =
 # ggplot2
 ggplot(out2, aes(x=jitter(num_correct),y=scores2)) +
   geom_point(size=2,alpha=.5) +
-  scale_x_continuous("Correct Responses",breaks = 1:47) + 
+  scale_x_continuous("Correct Responses",breaks = seq(1,35,2)) + 
   scale_y_continuous("Ordered IRT Score",breaks = seq(-3,3,0.5)) +
   theme_clean() +
   theme(plot.background = element_rect(color=NA))
@@ -633,7 +614,8 @@ summary(m1)
 m2 <- lm(ess1_IRT1_subset$imsmetn ~ out2$scores2)
 summary(m2)
 
-
+m3 <- lm(ess1_IRT1_subset$imptrad ~ out2$scores2)
+summary(m3)
 
 
 
