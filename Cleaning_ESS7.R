@@ -7,9 +7,11 @@ library(ggplot2)
 library(GGally)
 library(ggthemes)
 library(mosaic)
+library(magrittr)
 
 #load survey data 
 ess7 <- read_dta("Desktop/PPE/DISS/ESS7e02_3/ESS7e02_3.dta")
+
 
 unique(ess7$region)
 
@@ -170,6 +172,7 @@ ess7_sea <- ess7_sea %>%
 ess7_a_full <- rbind(ess7_ata, ess7_cha, ess7_cza, ess7_dka, ess7_esa, 
                      ess7_fra, ess7_iea, ess7_nla, ess7_noa, ess7_pla, 
                      ess7_pta, ess7_sea)
+ess7_a_full$reg_code <- ess7_a_full$region
 
 ess7_a_subset <- ess7_a_full
 
@@ -423,5 +426,17 @@ ggplot(out7, aes(x=jitter(cumulative_response),y=scores7)) +
   theme(plot.background = element_rect(color=NA))
 
 
+ess7_b <- ess7_IRT1_subset
+ess7_b$IRTscores <- grm_scores7$score.dat$z1
+ess7_b$cumulative_response <- rowSums(ess7_IRT1_subset[, 
+                              c("qfimwht", 
+                              "qfimcmt",
+                              "qfimlng", "pplstrd")])
 
+#merge with census data
+ess7_c <- merge(ess7_b, census_full_11, by = "reg_code", all.x = TRUE)
+
+ess7_d <- merge(ess7_c, census_2011_controls, by = "reg_code", all.x = TRUE)
+
+ess7_final <- ess7_d
 
