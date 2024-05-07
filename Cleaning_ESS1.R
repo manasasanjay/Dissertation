@@ -532,44 +532,29 @@ dev.off()
 
 ess1_IRT1_subset <- ess1_a_subset[complete.cases(ess1_a_subset[,
                     c("qfimwht", "qfimcmt",
-                   "qfimlng", "pplstrd"
+                   "qfimlng", "pplstrd", "comnlng"
                    )]),]
-
-
-pcafit <- prcomp(ess1_PCA1_subset[, c("qfimwht_std", 
-                                      "qfimcmt_std",
-                                      "qfimlng_std", "imueclt_std", "pplstrd")], 
-                 scale. = TRUE)
-summary(pcafit)
-
-pcafit
-
-cor(pcafit$x[,1], ess1_PCA1_subset$imdfetn)
-cor(pcafit$x[,1], ess1_PCA1_subset$imptrad)
-cor(pcafit$x[,1], ess1_PCA1_subset$imsmetn)
-cor(pcafit$x[,2], ess1_PCA1_subset$imsmetn)
-cor(pcafit$x[,2], ess1_PCA1_subset$imdfetn)
 
 hist(rowSums(ess1_IRT1_subset[, c("qfimwht", 
                                   "qfimcmt",
                                   "qfimlng", "pplstrd"
                                  )]),
      xlab="IDK",main="",
-     br=seq(1,35,1), freq=FALSE)
+     br=seq(1,39,1), freq=FALSE)
 
 #okay how about you first rescale everything to be on a scale of 1-5
 
 
 range(rowSums(ess1_IRT1_subset[, c("qfimwht", 
                                    "qfimcmt",
-                                   "qfimlng", "pplstrd"
+                                   "qfimlng", "pplstrd", "comnlng"
                                    )]))
 
 
 #Trying ordinal IRT
 grm_fit <- grm(ess1_IRT1_subset[, c("qfimwht", 
                                     "qfimcmt",
-                                    "qfimlng", "pplstrd"
+                                    "qfimlng", "pplstrd", "comnlng"
                                     )])
 grm_fit
 par(mfrow=c(3,2))
@@ -578,13 +563,17 @@ plot(grm_fit)
 grm_scores <- factor.scores.grm(grm_fit,resp.patterns=ess1_IRT1_subset[, 
                                                     c("qfimwht", 
                                                     "qfimcmt",
-                                            "qfimlng", "pplstrd" 
+                                            "qfimlng", "pplstrd", "comnlng" 
                                             )])
-out2 <- data.frame(scores2 = grm_scores$score.dat$z1,num_correct = 
+out2 <- data.frame(scores2 = grm_scores$score.dat$z1,cumulative_response = 
                      rowSums(ess1_IRT1_subset[, 
                    c("qfimwht", 
                    "qfimcmt",
-                   "qfimlng", "pplstrd")]))
+                   "qfimlng", "pplstrd", "comnlng")]), 
+                   idno = ess1_IRT1_subset$idno)
+
+
+
 
 # BaseR
 # plot(jitter(out2$num_correct),out2$scores2,
@@ -593,9 +582,9 @@ out2 <- data.frame(scores2 = grm_scores$score.dat$z1,num_correct =
 #      pch=16,col=rgb(0,0,0,0.25))
 
 # ggplot2
-ggplot(out2, aes(x=jitter(num_correct),y=scores2)) +
+ggplot(out2, aes(x=jitter(cumulative_response),y=scores2)) +
   geom_point(size=2,alpha=.5) +
-  scale_x_continuous("Correct Responses",breaks = seq(1,35,2)) + 
+  scale_x_continuous("Correct Responses",breaks = seq(1,39,2)) + 
   scale_y_continuous("Ordered IRT Score",breaks = seq(-3,3,0.5)) +
   theme_clean() +
   theme(plot.background = element_rect(color=NA))
@@ -617,6 +606,14 @@ summary(m2)
 m3 <- lm(ess1_IRT1_subset$imptrad ~ out2$scores2)
 summary(m3)
 
+
+#try merging scores with dataset 
+ess1_b <- ess1_IRT1_subset
+ess1_b$IRTscores <- grm_scores$score.dat$z1
+ess1_b$cumulative_response <- rowSums(ess1_IRT1_subset[, 
+                               c("qfimwht", 
+                               "qfimcmt",
+                                "qfimlng", "pplstrd", "comnlng")])
 
 
 
