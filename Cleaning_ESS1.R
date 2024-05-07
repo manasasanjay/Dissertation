@@ -522,8 +522,8 @@ png(file = "Dissertation GitHub/figures/corrplot1.png",
     width = 6000, height = 4000, res = 650)
 
 corrplot.mixed(
-  cor(ess1_PCA1_subset[, c("imsmetn", "imdfetn", "qfimwht_std", "qfimcmt_std",
-                           "qfimlng_std", "imueclt_std", "pplstrd", "imptrad")],
+  cor(ess1_a_subset[, c("qfimwht", "qfimcmt",
+                           "qfimlng", "pplstrd", "comnlng")],
       use="complete.obs"),
   upper="ellipse",tl.cex=0.3)
 
@@ -606,14 +606,24 @@ summary(m2)
 m3 <- lm(ess1_IRT1_subset$imptrad ~ out2$scores2)
 summary(m3)
 
+#merge with census data
+ess1_c <- merge(ess1_b, census_full_1, by = "reg_code", all.x = TRUE)
 
-#try merging scores with dataset 
-ess1_b <- ess1_IRT1_subset
-ess1_b$IRTscores <- grm_scores$score.dat$z1
-ess1_b$cumulative_response <- rowSums(ess1_IRT1_subset[, 
-                               c("qfimwht", 
-                               "qfimcmt",
-                                "qfimlng", "pplstrd", "comnlng")])
+ess1_d <- merge(ess1_c, census_2001_controls, by = "reg_code", all.x = TRUE)
+
+
+ess1_final <- ess1_d
+
+
+
+
+
+
+
+
+
+
+
 
 
 
