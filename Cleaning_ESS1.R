@@ -367,6 +367,7 @@ ess1_a_subset$rlgoptp <- as.numeric(ess1_a_subset$rlgoptp)
 ess1_a_subset$imprlg <- as.numeric(ess1_a_subset$imprlg)
 ess1_a_subset$dvrcdev <- as.numeric(ess1_a_subset$dvrcdev)
 ess1_a_subset$ipudrst <- as.numeric(ess1_a_subset$ipudrst)
+ess1_a_subset$rlgdgr <- as.numeric(ess1_a_subset$rlgdgr)
 
 
 
@@ -537,12 +538,13 @@ ess1_IRT1_subset <- ess1_a_subset[complete.cases(ess1_a_subset[,
 
 hist(rowSums(ess1_IRT1_subset[, c("qfimwht", 
                                   "qfimcmt",
-                                  "qfimlng", "pplstrd"
+                                  "qfimlng", "pplstrd", "comnlng"
                                  )]),
      xlab="IDK",main="",
      br=seq(1,39,1), freq=FALSE)
 
 #okay how about you first rescale everything to be on a scale of 1-5
+#nvm don't do that, you don't need to. 
 
 
 range(rowSums(ess1_IRT1_subset[, c("qfimwht", 
@@ -588,6 +590,14 @@ ggplot(out2, aes(x=jitter(cumulative_response),y=scores2)) +
   scale_y_continuous("Ordered IRT Score",breaks = seq(-3,3,0.5)) +
   theme_clean() +
   theme(plot.background = element_rect(color=NA))
+
+ess1_b <- ess1_IRT1_subset
+ess1_b$IRTscores <- grm_scores$score.dat$z1
+ess1_b$cumulative_response <- rowSums(ess1_IRT1_subset[, 
+                              c("qfimwht", 
+                             "qfimcmt",
+                             "qfimlng", "pplstrd", "comnlng")])
+
 
 
 range(out2$scores2)
