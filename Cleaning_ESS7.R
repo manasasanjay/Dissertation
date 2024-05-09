@@ -440,3 +440,16 @@ ess7_d <- merge(ess7_c, census_2011_controls, by = "reg_code", all.x = TRUE)
 
 ess7_final <- ess7_d
 
+midk <- lm(Eth_Frac ~ IRTscores, data = ess7_final)
+summary(midk)
+
+midk2 <- lm(soc_trst ~ Eth_Frac*IRTscores, data = ess7_final)
+summary(midk2)
+
+
+
+
+
+
+
+
