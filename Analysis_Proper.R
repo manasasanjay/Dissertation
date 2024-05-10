@@ -107,8 +107,99 @@ ggplot(data = ranefs_mirt, mapping = aes(x = Eth_Frac, y = IRT)) +
   geom_point() + geom_smooth()
 dev.off()
 
-# Display the plot
-print(plot1)
+#run the model without res_turnover, single parent hh, and avg edu years 
+
+mirt2 <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+               empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+               stflife +unemp_rate_mc + 
+               IRTscores + (1 + Eth_Frac_mc + IRTscores|reg_code),
+             data = ess1_final)
+summary(mirt2)
+
+ranef(mirt2)
+
+#run the model with everything except res_turnover 
+mirt3 <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+               empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+               stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+               IRTscores + (1 + Eth_Frac_mc + IRTscores|reg_code),
+             data = ess1_final)
+summary(mirt3)
+ranef(mirt3)
+
+#run the model with everything except single parent hh 
+mirt4 <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+               empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+               stflife + avgeduyrs_mc + unemp_rate_mc + 
+               res_turn_mc + IRTscores + (1 + Eth_Frac_mc + IRTscores|reg_code),
+             data = ess1_final)
+summary(mirt4)
+ranef(mirt4)
+
+#run the model with everything except avg edu years 
+
+mirt5 <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+               empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+               stflife + unemp_rate_mc + sin_par_hh_mc + 
+               res_turn_mc + IRTscores + (1 + Eth_Frac_mc + IRTscores|reg_code),
+             data = ess1_final)
+summary(mirt5)
+
+ranef(mirt5)
+
+#try with ess7 
+
+ess7_final <- ess7_final %>%
+  mutate_at(vars(res_turn, avgeduyrs, sin_par_hh, unemp_rate), as.numeric)
+
+
+#mean centre ethnic fractionalisation, avg education years, education years 
+#of respondent, single parent hh, residential turnover, unemp rate
+
+ess7_final$res_turn_mc <- scale(ess7_final$res_turn, scale = FALSE)
+ess7_final$Eth_Frac_mc <- scale(ess7_final$Eth_Frac, scale = FALSE)
+ess7_final$eduyrs_mc <- scale(ess7_final$eduyrs, scale = FALSE)
+ess7_final$sin_par_hh_mc <- scale(ess7_final$sin_par_hh, scale = FALSE)
+ess7_final$unemp_rate_mc <- scale(ess7_final$unemp_rate, scale = FALSE)
+ess7_final$avgeduyrs_mc <- scale(ess7_final$avgeduyrs, scale = FALSE)
+
+
+
+colnames(ess7_final)[629:634] <- paste(c("res_turn_mc", "Eth_Frac_mc", "eduyrs_mc", 
+                                         "sin_par_hh_mc", "unemp_rate_mc", "avgeduyrs_mc"))
+
+#exclude observations for poland from PL71 region (no census data)
+ess7_final <- filter(ess7_final, !(reg_code == "PL71"))
+
+m07 <- lmer(soc_trst ~ (1|reg_code), data = ess7_final)
+summary(m07)
+#icc = 0.23, use MLM
+
+mcore7 <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnta + 
+                empl + icpart2 + crmvct + ins_trst + dfegcf + 
+                stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+                res_turn_mc + (1 + Eth_Frac_mc|reg_code), data = ess7_final)
+summary(mcore7)
+
+#add irt scores
+mcore7 <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnta + 
+                 empl + icpart2 + crmvct + ins_trst + dfegcf + 
+                 stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+                 res_turn_mc + IRTscores + (1 + Eth_Frac_mc + IRTscores|reg_code), data = ess7_final)
+summary(mcore7)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
