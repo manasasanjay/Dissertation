@@ -51,6 +51,9 @@ no_ess1_final <- filter(ess1_final, cntry == "NO")
 
 pl_ess1_final <- filter(ess1_final, cntry == "PL")
 
+#exclude observations in poland where PL71 region, no census data 
+pl_ess1_final <- filter(pl_ess1_final, !(reg_code == "PL71"))
+
 pt_ess1_final <- filter(ess1_final, cntry == "PT")
 
 es_ess1_final <- filter(ess1_final, cntry == "ES")
@@ -97,14 +100,41 @@ summary(m0_se)
 m0_ch <- lmer(soc_trst ~ (1|reg_code), data = ch_ess1_final)
 summary(m0_ch)
 
+#run a model without any controls, just social trust on ethnic frac
 m1_at <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = at_ess1_final)
 summary(m1_at)
 
+m1_cz <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = cz_ess1_final)
+summary(m1_cz)
 
+m1_dk <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = dk_ess1_final)
+summary(m1_dk)
 
+m1_fr <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = fr_ess1_final)
+summary(m1_fr)
 
+m1_ie <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = ie_ess1_final)
+summary(m1_ie)
 
+m1_nl <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = nl_ess1_final)
+summary(m1_nl)
 
+m1_no <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = no_ess1_final)
+summary(m1_no)
+
+m1_pt <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = pt_ess1_final)
+summary(m1_pt)
+
+m1_es <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = es_ess1_final)
+summary(m1_es)
+
+m1_se <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = se_ess1_final)
+summary(m1_se)
+
+m1_ch <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = ch_ess1_final)
+summary(m1_ch)
+
+#add individual and NUTS level controls. 
 
 
 
