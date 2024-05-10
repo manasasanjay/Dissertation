@@ -72,9 +72,10 @@ coef(mcore)
 mirt <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
                empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
                stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
-               res_turn_mc + IRTscores + (1 + Eth_Frac_mc|reg_code),
+               res_turn_mc + IRTscores + (1 + Eth_Frac_mc + IRTscores|reg_code),
              data = ess1_final)
 summary(mirt)
+coef(mirt)
 
 
 vif(mcore)
@@ -90,4 +91,26 @@ range(ess1_final$IRTscores, na.rm = TRUE)
 ess1_final$IRTscores_mc <- scale(ess1_final$IRTscores, scale = FALSE)
 
 range(ess1_final$soc_trst, na.rm = TRUE)
+ranef(mirt)
+str(ranef(mirt))
+
+ranefs_mirt <- as.data.frame(ranef(mirt)$reg_code[, 2])  # Extract the second column of random effects
+
+
+colnames(ranefs_mirt) <- "Eth_Frac"  # Rename the column to "Eth_Frac"
+
+ranefs_mirt$IRT <- ranef(mirt)$reg_code[, 3]
+
+png(file = "Dissertation Github/figures/plot1.png", 
+    width = 6000, height = 4000, res = 650)
+ggplot(data = ranefs_mirt, mapping = aes(x = Eth_Frac, y = IRT)) +
+  geom_point() + geom_smooth()
+dev.off()
+
+# Display the plot
+print(plot1)
+
+
+
+
 
