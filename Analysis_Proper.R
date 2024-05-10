@@ -10,6 +10,7 @@ library(mosaic)
 library(magrittr)
 library(lme4)
 library(arm)
+library(car)
 
 
 #first recode controls to be numeric, for some reason they're character
@@ -29,6 +30,8 @@ ess1_final$Eth_Frac_mc <- scale(ess1_final$Eth_Frac, scale = FALSE)
 ess1_final$eduyrs_mc <- scale(ess1_final$eduyrs, scale = FALSE)
 ess1_final$sin_par_hh_mc <- scale(ess1_final$sin_par_hh, scale = FALSE)
 ess1_final$unemp_rate_mc <- scale(ess1_final$unemp_rate, scale = FALSE)
+ess1_final$avgeduyrs_mc <- scale(ess1_final$avgeduyrs, scale = FALSE)
+
 
 
 colnames(ess1_final)[593:597] <- paste(c("res_turn_mc", "Eth_Frac_mc", "eduyrs_mc", 
@@ -45,17 +48,46 @@ summary(m0)
 
 #icc = 0.21 > 0.1 so MLM makes sense (potential for ecological fallacies)
 
+#run a model without any controls, just ethnic frac on social trust 
+mbase <- lmer(soc_trst ~ Eth_Frac_mc + (1 + Eth_Frac_mc|reg_code), data = ess1_final)
+summary(mbase)
+
+coef(mbase)
+
+#add controls:
+#individual level: gender, age, education, income, employment status, cohabitaion, 
+#crime victim, length of residence, institutional trust, life satisfaction, immigrant friends
+#immigrant colleagues
+#contextual: education, unemployment rate, single parent households, residential turnover. 
+
+mcore <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+                empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+                stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+                res_turn_mc + (1 + Eth_Frac_mc|reg_code), data = ess1_final)
+summary(mcore)
+
+coef(mcore)
 
 
+mirt <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+               empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+               stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+               res_turn_mc + IRTscores + (1 + Eth_Frac_mc|reg_code),
+             data = ess1_final)
+summary(mirt)
 
 
+vif(mcore)
 
+vif_values <- vif(mcore)
 
+png(filename = "Dissertation GitHub/figures/vifplot.png")
+barplot(vif_values, main = "VIF Values", horiz = TRUE, col = "steelblue")
+dev.off()
 
+range(ess1_final$IRTscores, na.rm = TRUE)
 
+ess1_final$IRTscores_mc <- scale(ess1_final$IRTscores, scale = FALSE)
 
-
-
-
-
+range(ess1_final$soc_trst, na.rm = TRUE)
 
