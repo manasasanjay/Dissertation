@@ -23,11 +23,11 @@ ess1_final <- ess1_final %>%
 #mean centre ethnic fractionalisation, avg education years, education years 
 #of respondent, single parent hh, residential turnover, unemp rate
 
-ess1_final$res_turn_mc = scale(ess1_final$res_turn, scale = FALSE)
-ess1_final$Eth_Frac_mc = scale(ess1_final$Eth_Frac, scale = FALSE)
-ess1_final$eduyrs_mc = scale(ess1_final$eduyrs, scale = FALSE)
-ess1_final$sin_par_hh_mc = scale(ess1_final$sin_par_hh, scale = FALSE)
-ess1_final$unemp_rate_mc = scale(ess1_final$unemp_rate, scale = FALSE)
+ess1_final$res_turn_mc <- scale(ess1_final$res_turn, scale = FALSE)
+ess1_final$Eth_Frac_mc <- scale(ess1_final$Eth_Frac, scale = FALSE)
+ess1_final$eduyrs_mc <- scale(ess1_final$eduyrs, scale = FALSE)
+ess1_final$sin_par_hh_mc <- scale(ess1_final$sin_par_hh, scale = FALSE)
+ess1_final$unemp_rate_mc <- scale(ess1_final$unemp_rate, scale = FALSE)
 
 
 colnames(ess1_final)[593:597] <- paste(c("res_turn_mc", "Eth_Frac_mc", "eduyrs_mc", 
@@ -97,7 +97,15 @@ summary(m0_se)
 m0_ch <- lmer(soc_trst ~ (1|reg_code), data = ch_ess1_final)
 summary(m0_ch)
 
-m1_at <- lmer(soc_trst ~  (1|reg_code), data = at_ess1_final)
+m1_at <- lmer(soc_trst ~  Eth_Frac_mc + (1|reg_code), data = at_ess1_final)
+summary(m1_at)
+
+
+
+
+
+
+
 
 
 
