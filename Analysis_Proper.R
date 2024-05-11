@@ -77,7 +77,21 @@ mirt <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt +
 summary(mirt)
 coef(mirt)
 
+mlinirt <- lm(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+                empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+                stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+                res_turn_mc + IRTscores, data = ess1_final)
 
+summary(mlinirt)
+
+mlin <- lm(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+             empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+             stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+             res_turn_mc, data = ess1_final)
+
+
+
+summary(mlin)
 vif(mcore)
 
 vif_values <- vif(mcore)
@@ -187,6 +201,46 @@ mcore7 <- lmer(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnta +
                  stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
                  res_turn_mc + IRTscores + (1 + Eth_Frac_mc + IRTscores|reg_code), data = ess7_final)
 summary(mcore7)
+
+mlin7 <- lm(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnta + 
+              empl + icpart2 + crmvct + ins_trst + dfegcf + 
+              stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+              res_turn_mc, data = ess7_final)
+summary(mlin7)
+
+mlinirt7 <- lm(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnta + 
+                 empl + icpart2 + crmvct + ins_trst + dfegcf + 
+                 stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+                 res_turn_mc + IRTscores, data = ess7_final)
+summary(mlinirt7)
+
+
+ctzcntr_1_rows <- ess1_final[ess1_final$ctzcntr == 1, ]
+# Check the structure of the resulting subset
+str(ctzcntr_1_rows)
+# Then, check the number of rows in that subset
+nrow(ctzcntr_1_rows)
+
+
+#run the model for just citizens of the country 
+
+mlinctz <- lm(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+             empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+             stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+             res_turn_mc + IRTscores, data = ctzcntr_1_rows)
+summary(mlinctz)
+
+#what about for non citiznes 
+
+ctzcntr_0_rows <- ess1_final[ess1_final$ctzcntr == 0, ]
+mlinnotctz <- lm(soc_trst ~ Eth_Frac_mc + gndr + agea + eduyrs_mc + hinctnt + 
+                empl + lvgptn + crmvct + yrlvdae + ins_trst + imgfrnd + imgclg + 
+                stflife + avgeduyrs_mc + unemp_rate_mc + sin_par_hh_mc + 
+                res_turn_mc + IRTscores, data = ctzcntr_0_rows)
+summary(mlinnotctz)
+
+vif(mlinirt)
+vif(mirt)
 
 
 
