@@ -979,10 +979,10 @@ ess1_a_subset$aesfdrk <- case_match(ess1_a_subset$aesfdrk, "1" ~ "Very safe",
                                 "4" ~ "Very unsafe")
 
 #Citizen of reporting country (dummy variable)
-ess1_a_subset$ctzcntr <- ifelse(ess1_a_subset$ctzcntr == 1, 1, 0)
+ess1_a_subset$ctzcntr <- ifelse(ess1_a_subset$ctzcntr == 1, "Yes", "No")
 
 #born in the country (dummy variable)
-ess1_a_subset$brncntr <- ifelse(ess1_a_subset$brncntr == 1, 1, 0)
+ess1_a_subset$brncntr <- ifelse(ess1_a_subset$brncntr == 1, "Yes", "No")
 
 #How long ago first came to live in country 
 ess1_a_subset$livecntr <- case_match(ess1_a_subset$livecntr, "1" ~ "<1", 
@@ -1012,7 +1012,8 @@ ess1_a_subset$empl <- case_match(ess1_a_subset$empl, "1" ~ "Employed",
                              "2" ~ "Self-Employed", "3" ~ "Not in paid work")
 #recode to a dummy variable 
 ess1_a_subset$empl <- ifelse(ess1_a_subset$empl == "Employed" | 
-                               ess1_a_subset$empl == "Self-Employed", 1, 0)
+                               ess1_a_subset$empl == "Self-Employed", "Employed", 
+                             "Unemployed")
 
 #gender
 ess1_a_subset$gndr <- case_match(ess1_a_subset$gndr, "1" ~ "Male", "2" ~ "Female")
@@ -2542,6 +2543,7 @@ colnames(ess7_final_subset)[55] <- "dvrcdev"
 #rbind both the datasets together 
 
 ess_complete <- rbind(ess1_final_subset, ess7_final_subset)
+ess_complete$essround <- as.character(ess_complete$essround)
 
 #run a null model to calculate intra-class correlation 
 mnull <- lmer(soc_trst ~ 1 + (1|reg_code), data = ess_complete)
@@ -2549,17 +2551,46 @@ summary(mnull)
 
 #icc = 0.82/3.7 = 0.22. > 0.1, so a hierarchical model makes sense. 
 
+#first, before running any actual models, mean centre all the controls that 
+#are continuous 
+
+ess_complete$Eth_Frac_mc <- scale(ess_complete$Eth_Frac, scale = FALSE)
+
+ess_complete$res_turn_mc <- scale(ess_complete$res_turn, scale = FALSE)
+
+ess_complete$sin_par_hh_mc <- scale(ess_complete$sin_par_hh, scale = FALSE)
+
+ess_complete$unemp_rate_mc <- scale(ess_complete$unemp_rate, scale = FALSE)
+
+ess_complete$eduyrs_mc <- scale(ess_complete$eduyrs, scale = FALSE)
+
+ess_complete$avgeduyrs_mc <- scale(ess_complete$avgeduyrs, scale = FALSE)
+
+#run a model without any controls, just ethnic fractionalisation on 
+#social trust 
+
+mbase <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1|reg_code), 
+              data = ess_complete)
+summary(mbase)
+
+#run a model with individual and contextual controls, but don't include IRT scores 
+#yet. 
+
+mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
+                avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                crmvct + lrscale + stflife + stfeco + empl + gndr + agea + 
+                ins_trst + ctzcntr  + 
+                lvgptn + (1 + Eth_Frac_mc|reg_code), 
+              data = ess_complete)
+summary(mcore)
 
 
+#run a base model without controls, but interacting IRT with eth frac 
 
-
-
-
-
-
-
-
-
+mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + 
+                   (1 + Eth_Frac_mc*IRTscores|reg_code), 
+                 data = ess_complete)
+summary(mbaseIRT)
 
 
 
