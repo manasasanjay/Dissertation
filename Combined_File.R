@@ -2606,13 +2606,22 @@ mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_
                                        optCtrl = list(method = "nlminb")))
 summary(mcoreIRT)
 
+vif(mcoreIRT)
+
+#two tailed test, p-value < 0.0051
+2*pt(-3.032, 29)
+
+#continuous 2-way interaction, predict ethnic fractionalisation's impact on 
+#social trust, conditional on perceived/preferred homogeneity at the minimum, 
+#lower quartile, mean, upper quartile, and maximum values. 
+
+
 
 coef(mcoreIRT)
 
 ranef(mcoreIRT)
 
-
-
+confint(mcoreIRT)
 
 
 
