@@ -2654,6 +2654,21 @@ mimmstat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_
 
 summary(mimmstat)
 
+#re run the immigrant status also controlling for whether they are a member of 
+# a minority ethnic group 
+mimmstatmin <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
+                      avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                      crmvct + stflife + stfeco + empl + gndr + agea + 
+                      ins_trst + 
+                      lvgptn + secgen + nat10 + natless10 + 
+                      nonctz10 + nonctzless10 + native + blgetmg +
+                      (1 + Eth_Frac_mc|reg_code), 
+                    data = ess_complete, 
+                    control = lmerControl(optimizer = "optimx", 
+                                          optCtrl = list(method = "nlminb")))
+
+summary(mimmstatmin)
+
 #------------By wave------------------
 
 #null model 
@@ -2722,6 +2737,10 @@ summary(mimmstat7)
 #run a model controlling for frequency of contact with immigrants and whether
 #contact was good or bad 
 
+#relevel contact
+ess7_final <- within(ess7_final, dfegcon <- relevel(factor(dfegcon), 
+                                                    ref = "Every day"))
+
 mcontactfreq <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
                        avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                        crmvct + stflife + empl + gndr + agea + 
@@ -2734,6 +2753,8 @@ mcontactfreq <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc +
                                            optCtrl = list(method = "nlminb")))
 
 summary(mcontactfreq)
+
+
 
 mcontactgb <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
                      avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
