@@ -2516,7 +2516,7 @@ ess1_final_subset <- ess1_final[, c("name", "essround", "edition", "proddate",
                                     "sin_par_hh", "unemp_rate", "domicil", 
                                     "eduyrs", "hinctnt", "lvgptn", "imtcjob", 
                                     "imbleco", "imwbcnt", "imwbcrm", "dvrcdev", 
-                                    "rlgdgr", "uemp5yr")]
+                                    "rlgdgr", "uemp5yr", "brncntr")]
 
 ess7_final_subset <- ess7_final[, c("name", "essround", "edition", "proddate", 
                                     "idno", "cntry", "reg_code", "dweight", 
@@ -2533,7 +2533,7 @@ ess7_final_subset <- ess7_final[, c("name", "essround", "edition", "proddate",
                                     "sin_par_hh", "unemp_rate", "domicil", 
                                     "eduyrs", "hinctnta", "icpart2", "imtcjob", 
                                     "imbleco", "imwbcnt", "imwbcrm", "dvrcdeva", 
-                                    "rlgdgr", "uemp5yr")]
+                                    "rlgdgr", "uemp5yr", "brncntr")]
 
 
 
@@ -2579,17 +2579,19 @@ summary(mbase)
 
 mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                crmvct + lrscale + stflife + stfeco + empl + gndr + agea + 
+                crmvct + stflife + stfeco + empl + gndr + agea + 
                 ins_trst + ctzcntr  + 
                 lvgptn + (1 + Eth_Frac_mc|reg_code), 
-              data = ess_complete)
+              data = ess_complete, 
+              control = lmerControl(optimizer = "optimx", 
+                                    optCtrl = list(method = "nlminb")))
 summary(mcore)
 
 
 #run a base model without controls, but interacting IRT with eth frac 
 
 mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + 
-                   (1 + Eth_Frac_mc*IRTscores|reg_code), 
+                   (1 + Eth_Frac_mc|reg_code), 
                  data = ess_complete)
 summary(mbaseIRT)
 
@@ -2600,7 +2602,7 @@ mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_
                    avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                    crmvct + stflife + stfeco + empl + gndr + agea + 
                    ins_trst + ctzcntr  + 
-                   lvgptn + (1 + Eth_Frac_mc*IRTscores|reg_code), 
+                   lvgptn + (1 + Eth_Frac_mc|reg_code), 
                  data = ess_complete, 
                  control = lmerControl(optimizer = "optimx", 
                                        optCtrl = list(method = "nlminb")))
@@ -2609,7 +2611,7 @@ summary(mcoreIRT)
 vif(mcoreIRT)
 
 #two tailed test, p-value < 0.0051
-2*pt(-3.032, 29)
+2*pt(-3.140, 29)
 
 #continuous 2-way interaction, predict ethnic fractionalisation's impact on 
 #social trust, conditional on perceived/preferred homogeneity at the minimum, 
@@ -2621,7 +2623,67 @@ coef(mcoreIRT)
 
 ranef(mcoreIRT)
 
-confint(mcoreIRT)
+
+#run the model for the full population controlling for immigration status 
+m2 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
+             avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+             crmvct + stflife + stfeco + empl + gndr + agea + 
+             ins_trst + ctzcntr  + 
+             lvgptn + secgen + nat10 + natless10 + 
+             nonctz10 + nonctzless10 + native + 
+             (1 + Eth_Frac_mc|reg_code), 
+           data = ess_complete, 
+           control = lmerControl(optimizer = "optimx", 
+                                 optCtrl = list(method = "nlminb")))
+summary(m2)
+
+
+#what happens if you split the population by whether they were born in the country 
+#or moved to the country? 
+sum(ess_complete$brncntr == "Yes", na.rm = TRUE) #37958
+
+
+sum(ess_complete$brncntr == "No", na.rm = TRUE) #3632
+
+
+#split sample by whether they were born in the country or not. 
+ess_completebrn <- ess_complete[ess_complete$brncntr == "Yes", ]
+ess_completenotbrn <- ess_complete[ess_complete$brncntr == "No", ]
+
+#run IRT model on this 
+
+mIRTbrn <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + eduyrs_mc + 
+                  hinctnt + 
+                  avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                  crmvct + stflife + stfeco + empl + gndr + agea + 
+                  ins_trst +  
+                  lvgptn + (1 + Eth_Frac_mc|reg_code), 
+                data = ess_completebrn, 
+                control = lmerControl(optimizer = "optimx", 
+                                      optCtrl = list(method = "nlminb")))
+summary(mIRTbrn)
+
+mIRTnotbrn <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + eduyrs_mc + 
+                     hinctnt + 
+                     avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                     crmvct + stflife + stfeco + empl + gndr + agea + 
+                     ins_trst +  
+                     lvgptn + (1 + Eth_Frac_mc|reg_code), 
+                   data = ess_completenotbrn, 
+                   control = lmerControl(optimizer = "optimx", 
+                                         optCtrl = list(method = "nlminb")))
+
+
+summary(mIRTnotbrn)
+
+help('isSingular')
+
+
+
+
+
+
+
 
 
 
