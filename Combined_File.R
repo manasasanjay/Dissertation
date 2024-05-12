@@ -2543,7 +2543,11 @@ colnames(ess7_final_subset)[55] <- "dvrcdev"
 
 ess_complete <- rbind(ess1_final_subset, ess7_final_subset)
 
+#run a null model to calculate intra-class correlation 
+mnull <- lmer(soc_trst ~ 1 + (1|reg_code), data = ess_complete)
+summary(mnull)
 
+#icc = 0.82/3.7 = 0.22. > 0.1, so a hierarchical model makes sense. 
 
 
 
