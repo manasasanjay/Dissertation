@@ -2609,7 +2609,7 @@ summary(mcoreIRT)
 
 coef(mcoreIRT)
 
-
+ranef(mcoreIRT)
 
 
 
