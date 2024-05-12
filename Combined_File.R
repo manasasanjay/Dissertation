@@ -2034,6 +2034,437 @@ cz_eth_frac_plots
 dev.off()
 
 
+#Denmark plots, 2001 and 2011
 
-?ggarrange
+dk_hhi_plot_2001 <- ggplot() +
+  geom_sf(dk_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+dk_hhi_plot_2011 <- ggplot() +
+  geom_sf(dk_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+dk_eth_frac_plots <- ggarrange(dk_hhi_plot_2001, dk_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Region in Denmark", 
+                               hjust = -0.45, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/DKEthFracDes1&11.png", 
+    width = 4500, height = 3000, res = 650)
+
+dk_eth_frac_plots
+
+dev.off()
+
+#France plots, 2001 and 2011
+
+fr_hhi_plot_2001 <- ggplot() +
+  geom_sf(fr_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+fr_hhi_plot_2011 <- ggplot() +
+  geom_sf(fr_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+fr_eth_frac_plots <- ggarrange(fr_hhi_plot_2001, fr_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 1 Region in France", 
+                               hjust = -0.45, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/FREthFracDes1&11.png", 
+    width = 4500, height = 3000, res = 650)
+
+fr_eth_frac_plots
+
+dev.off()
+
+#Ireland plots, 2001 and 2011
+
+ie_hhi_plot_2001 <- ggplot() +
+  geom_sf(ie_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+ie_hhi_plot_2011 <- ggplot() +
+  geom_sf(ie_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+ie_eth_frac_plots <- ggarrange(ie_hhi_plot_2001, ie_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Region in Ireland", 
+                               hjust = -0.82, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/IEEthFracDes1&11.png", 
+    width = 6000, height = 4000, res = 650)
+
+ie_eth_frac_plots
+
+dev.off()
+
+#Netherlands plots, 2001 and 2011
+
+nl_hhi_plot_2001 <- ggplot() +
+  geom_sf(nl_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+nl_hhi_plot_2011 <- ggplot() +
+  geom_sf(nl_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+nl_eth_frac_plots <- ggarrange(nl_hhi_plot_2001, nl_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Regions in the Netherlands", 
+                               hjust = -0.7, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/NLEthFracDes1&11.png", 
+    width = 6000, height = 4000, res = 650)
+
+nl_eth_frac_plots
+
+dev.off()
+
+
+#Norway plots, 2001 and 2011
+
+no_hhi_plot_2001 <- ggplot() +
+  geom_sf(no_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+no_hhi_plot_2011 <- ggplot() +
+  geom_sf(no_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+no_eth_frac_plots <- ggarrange(no_hhi_plot_2001, no_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Regions in Norway", 
+                               hjust = -0.8, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/NOEthFracDes1&11.png", 
+    width = 6000, height = 4000, res = 650)
+
+no_eth_frac_plots
+
+dev.off()
+
+#Poland plots, 2001 and 2011
+
+pl_hhi_plot_2001 <- ggplot() +
+  geom_sf(pl_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+pl_hhi_plot_2011 <- ggplot() +
+  geom_sf(pl_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+pl_eth_frac_plots <- ggarrange(pl_hhi_plot_2001, pl_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Regions in Poland", 
+                               hjust = -0.8, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/PLEthFracDes1&11.png", 
+    width = 6000, height = 4000, res = 650)
+
+pl_eth_frac_plots
+
+dev.off()
+
+#Portugal plots, 2001 and 2011
+
+pt_hhi_plot_2001 <- ggplot() +
+  geom_sf(pt_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+pt_hhi_plot_2011 <- ggplot() +
+  geom_sf(pt_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+pt_eth_frac_plots <- ggarrange(pt_hhi_plot_2001, pt_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Regions in Portugal", 
+                               hjust = -0.8, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/PTEthFracDes1&11.png", 
+    width = 6000, height = 4000, res = 650)
+
+pt_eth_frac_plots
+
+dev.off()
+
+#Spain plots, 2001 and 2011
+
+es_hhi_plot_2001 <- ggplot() +
+  geom_sf(es_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+es_hhi_plot_2011 <- ggplot() +
+  geom_sf(es_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+es_eth_frac_plots <- ggarrange(es_hhi_plot_2001, es_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Regions in Spain", 
+                               hjust = -0.8, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/ESEthFracDes1&11.png", 
+    width = 6000, height = 4000, res = 650)
+
+es_eth_frac_plots
+
+dev.off()
+
+#Sweden plots, 2001 and 2011
+
+se_hhi_plot_2001 <- ggplot() +
+  geom_sf(se_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+se_hhi_plot_2011 <- ggplot() +
+  geom_sf(se_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+se_eth_frac_plots <- ggarrange(se_hhi_plot_2001, se_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Regions in Sweden", 
+                               hjust = -0.8, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/SEEthFracDes1&11.png", 
+    width = 6000, height = 4000, res = 650)
+
+se_eth_frac_plots
+
+dev.off()
+
+#Switzerland plots, 2001 and 2011
+
+ch_hhi_plot_2001 <- ggplot() +
+  geom_sf(ch_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+ch_hhi_plot_2011 <- ggplot() +
+  geom_sf(ch_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+ch_eth_frac_plots <- ggarrange(ch_hhi_plot_2001, ch_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Regions in Switzerland", 
+                               hjust = -0.8, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/CHEthFracDes1&11.png", 
+    width = 6000, height = 4000, res = 650)
+
+ch_eth_frac_plots
+
+dev.off()
+
+
+
 
