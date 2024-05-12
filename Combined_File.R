@@ -1435,6 +1435,9 @@ ess7_a_subset$rlgueim <- as.numeric(ess7_a_subset$rlgueim)
 ess7_a_subset$uemp5yr <- as.numeric(ess7_a_subset$uemp5yr)
 ess7_a_subset$ipudrst <- as.numeric(ess7_a_subset$ipudrst)
 ess7_a_subset$dvrcdeva <- as.numeric(ess7_a_subset$dvrcdeva)
+ess7_a_subset$facntr <- as.character(ess7_a_subset$facntr)
+ess7_a_subset$mocntr <- as.character(ess7_a_subset$mocntr)
+
 
 #create a social trust variable, a mean of ppltrst, pplfair, and pplhlp including
 #only respondents who have responded to at least 2 out of the three questions 
@@ -1521,6 +1524,49 @@ ess7_a_subset$dfegcon <- case_match(ess7_a_subset$dfegcon, "1" ~ "Never",
                                 "5" ~ "Once a week", 
                                 "6" ~ "Several times a week", 
                                 "7" ~ "Every day")
+
+class(ess7_a_subset$facntr)
+
+
+#second generation (i.e., either father or mother not born in country, but 
+#respondent born in country)
+ess7_a_subset <- ess7_a_subset %>%
+  mutate(secgen = case_when(
+    facntr == "2" | mocntr == "2" & brncntr == "Yes" & ctzcntr == "Yes" 
+    ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+#Naturalised, more than 10 years in country (i.e., not born in the country, 
+#but a citizen and has lived here more than 10 years. )
+ess7_a_subset <- ess7_a_subset %>% 
+  mutate(nat10 = case_when(
+    brncntr == "No" & ctzcntr == "Yes" & livecnta < 2004 ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+#Naturalised, less than 10 years in country (i.e., not born in the country, 
+#but a citizen and has lived here less than 10 years)
+ess7_a_subset <- ess7_a_subset %>% 
+  mutate(natless10 = case_when(
+    brncntr == "No" & ctzcntr == "Yes" & livecnta > 2004 ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+#Non-citizen, more than 10 years in country
+ess7_a_subset <- ess7_a_subset %>% 
+  mutate(nonctz10 = case_when(
+    ctzcntr == "No" & livecnta < 2004 ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+#Non-citizen, less than 10 years in country 
+ess7_a_subset <- ess7_a_subset %>% 
+  mutate(nonctzless10 = case_when(
+    ctzcntr == "No" & livecnta > 2004 ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
 
 #some cultures: much better or all equal 
 ess7_a_subset$smctmbe <- case_match(ess7_a_subset$smctmbe, 
@@ -1655,6 +1701,7 @@ ess7_b$cumulative_response <- rowSums(ess7_IRT1_subset[,
 ess7_final <- merge(ess7_b, merged_census_2011, by = "reg_code", all.x = TRUE)
 
 
+#----------------------------Descriptive Statistics-----------------------------
 
 
 
