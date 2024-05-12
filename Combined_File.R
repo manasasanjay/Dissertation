@@ -2465,6 +2465,14 @@ ch_eth_frac_plots
 
 dev.off()
 
+png(file = "Dissertation Github/figures/EthFrac.png", width = 10000, height = 8000, 
+    res = 650)
+ggarrange(at_eth_frac_plots, cz_eth_frac_plots, dk_eth_frac_plots, fr_eth_frac_plots, 
+          ie_eth_frac_plots, nl_eth_frac_plots, no_eth_frac_plots, pl_eth_frac_plots, 
+          pt_eth_frac_plots, es_eth_frac_plots, se_eth_frac_plots, ch_eth_frac_plots, 
+          ncol = 3, nrow = 6, labels = "Ethnic Fractionalisation in 2001 and 2011", 
+         font.label = list(size = 14, face = "bold"))
+dev.off()
 
 
 
