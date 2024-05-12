@@ -15,6 +15,7 @@ library(kableExtra)
 library(sf)
 library(ggpubr)
 library(optimx)
+library(lmerTest)
 
 
 #------------------------------Cleaning Census Data 2001------------------------
@@ -2638,47 +2639,62 @@ m2 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc +
 summary(m2)
 
 
-#what happens if you split the population by whether they were born in the country 
-#or moved to the country? 
-sum(ess_complete$brncntr == "Yes", na.rm = TRUE) #37958
+#what happens if you split the population by whether they are citizens or not? 
+sum(ess_complete$ctzcntr == "Yes", na.rm = TRUE) #39851
 
 
-sum(ess_complete$brncntr == "No", na.rm = TRUE) #3632
+sum(ess_complete$ctzcntr == "No", na.rm = TRUE) #1744
 
 
 #split sample by whether they were born in the country or not. 
-ess_completebrn <- ess_complete[ess_complete$brncntr == "Yes", ]
-ess_completenotbrn <- ess_complete[ess_complete$brncntr == "No", ]
+ess_completectz <- ess_complete[ess_complete$ctzcntr == "Yes", ]
+ess_completenotctz <- ess_complete[ess_complete$ctzcntr == "No", ]
 
 #run IRT model on this 
 
-mIRTbrn <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + eduyrs_mc + 
+mIRTctz <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + eduyrs_mc + 
                   hinctnt + 
                   avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                   crmvct + stflife + stfeco + empl + gndr + agea + 
                   ins_trst +  
                   lvgptn + (1 + Eth_Frac_mc|reg_code), 
-                data = ess_completebrn, 
+                data = ess_completectz, 
                 control = lmerControl(optimizer = "optimx", 
                                       optCtrl = list(method = "nlminb")))
-summary(mIRTbrn)
+summary(mIRTctz)
 
-mIRTnotbrn <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + eduyrs_mc + 
+mIRTnotctz <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + eduyrs_mc + 
                      hinctnt + 
                      avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                      crmvct + stflife + stfeco + empl + gndr + agea + 
                      ins_trst +  
                      lvgptn + (1 + Eth_Frac_mc|reg_code), 
-                   data = ess_completenotbrn, 
+                   data = ess_completenotctz, 
                    control = lmerControl(optimizer = "optimx", 
                                          optCtrl = list(method = "nlminb")))
 
 
-summary(mIRTnotbrn)
-
-help('isSingular')
+summary(mIRTnotctz)
 
 
+mIRTnotbrn2 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + eduyrs_mc + 
+                      hinctnt + 
+                      avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                      crmvct + stflife + stfeco + empl + gndr + agea + 
+                      ins_trst +  
+                      lvgptn + blgetmg + (1 + Eth_Frac_mc|reg_code), 
+                    data = ess_completenotbrn, 
+                    control = lmerControl(optimizer = "optimx", 
+                                          optCtrl = list(method = "nlminb")))
+
+
+summary(mIRTnotbrn2)
+
+ranef(mcore)
+ranef(mcoreIRT)
+
+
+anova(mcore, mcoreIRT)
 
 
 
