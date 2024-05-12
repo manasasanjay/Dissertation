@@ -924,7 +924,8 @@ ess1_a_subset$imprlg <- as.numeric(ess1_a_subset$imprlg)
 ess1_a_subset$dvrcdev <- as.numeric(ess1_a_subset$dvrcdev)
 ess1_a_subset$ipudrst <- as.numeric(ess1_a_subset$ipudrst)
 ess1_a_subset$rlgdgr <- as.numeric(ess1_a_subset$rlgdgr)
-
+ess1_a_subset$facntr <- as.character(ess1_a_subset$facntr)
+ess1_a_subset$mocntr <- as.character(ess1_a_subset$mocntr)
 
 
 #create a social trust variable, a mean of ppltrst, pplfair, and pplhlp including
@@ -1029,7 +1030,53 @@ ess1_a_subset$lvgptn <- case_match(ess1_a_subset$lvgptn, "1" ~ "Yes", "2" ~ "No"
 #Respondent or hh member ever a victime of burglary/assault in the past 5 years 
 ess1_a_subset$crmvct <- case_match(ess1_a_subset$crmvct, "1" ~ "Yes", "2" ~ "No")
 
-#recode respondent income: collapse into 5 bins as opposed to the current 12. 
+#second generation (i.e., either father or mother not born in country, but 
+#respondent born in country)
+ess1_a_subset <- ess1_a_subset %>%
+  mutate(secgen = case_when(
+    facntr == "2" | mocntr == "2" & brncntr == "Yes" & ctzcntr == "Yes" 
+    ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+
+#Naturalised, more than 10 years in country (i.e., not born in the country, 
+#but a citizen and has lived here more than 10 years. )
+ess1_a_subset <- ess1_a_subset %>% 
+  mutate(nat10 = case_when(
+    brncntr == "No" & ctzcntr == "Yes" & livecntr == "11-20" | 
+      livecntr == ">20" ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+
+#Naturalised, less than 10 years in country (i.e., not born in the country, 
+#but a citizen and has lived here less than 10 years)
+ess1_a_subset <- ess1_a_subset %>% 
+  mutate(natless10 = case_when(
+    brncntr == "No" & ctzcntr == "Yes" & livecntr == "<1" | 
+      livecntr == "1-5" | livecntr == "6-10" ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+#Non-citizen, more than 10 years in country
+ess1_a_subset <- ess1_a_subset %>% 
+  mutate(nonctz10 = case_when(
+    ctzcntr == "No" & livecntr == "11-20" | 
+      livecntr == ">20" ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+#Non-citizen, less than 10 years in country 
+ess1_a_subset <- ess1_a_subset %>% 
+  mutate(nonctzless10 = case_when(
+    ctzcntr == "No" & livecntr == "<1" | 
+      livecntr == "1-5" | livecntr == "6-10" ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+
+#recode respondent income: collapse into 8 bins as opposed to the current 12. 
 
 ess1_a_subset <- ess1_a_subset %>%
   mutate(hinctnt = case_when(
