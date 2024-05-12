@@ -1752,12 +1752,288 @@ ess7_final <- merge(ess7_b, merged_census_2011, by = "reg_code", all.x = TRUE)
 
 #----------------------------Descriptive Statistics-----------------------------
 
+#------first grpahs of ethnic heterogeneity
+#load shapefile data 
+eur_shp <- st_read("Desktop/PPE/Diss/NUTS_RG_20M_2006_3035.shp/NUTS_RG_20M_2006_3035.shp")
+
+nrow(eur_shp$CNTR_CODE == "DK")
+
+
+#subset shapefile to only have countries you need
+eur_shp <- eur_shp[eur_shp$CNTR_CODE %in% c("AT", "CZ", "DK", 
+                                            "FR", "IE", "NL", 
+                                            "NO", "PL", "PT", 
+                                            "ES", "SE", "CH"), ]
+#also subset further to only include nuts2 regions for all countries except france
+#where it should be nuts1
+eur_shp <- eur_shp[ifelse(eur_shp$CNTR_CODE == "FR", 
+                          eur_shp$LEVL_CODE == 1, 
+                          eur_shp$LEVL_CODE == 2), ]
+colnames(eur_shp)[1] <- "reg_code"
+
+#Split into countries 
+
+#austria
+at_shp <- eur_shp[eur_shp$CNTR_CODE == "AT", ]
+
+#czechia 
+cz_shp <- eur_shp[eur_shp$CNTR_CODE == "CZ", ]
+
+#denmark 
+dk_shp <- eur_shp[eur_shp$CNTR_CODE == "DK", ]
+
+#france 
+fr_shp <- eur_shp[eur_shp$CNTR_CODE == "FR", ]
+
+#ireland 
+ie_shp <- eur_shp[eur_shp$CNTR_CODE == "IE", ]
+
+#netherlands 
+nl_shp <- eur_shp[eur_shp$CNTR_CODE == "NL", ]
+
+#norway 
+no_shp <- eur_shp[eur_shp$CNTR_CODE == "NO", ]
+
+#poland 
+pl_shp <- eur_shp[eur_shp$CNTR_CODE == "PL", ]
+
+#portugal 
+pt_shp <- eur_shp[eur_shp$CNTR_CODE == "PT", ]
+
+#spain 
+es_shp <- eur_shp[eur_shp$CNTR_CODE == "ES", ]
+
+#sweden 
+se_shp <- eur_shp[eur_shp$CNTR_CODE == "SE", ]
+
+#switzerland 
+ch_shp <- eur_shp[eur_shp$CNTR_CODE == "CH", ]
+
+
+#just recode spain's code to combine ceuta and mellila 
+
+es_shp$reg_code <- ifelse(es_shp$reg_code == "ES64", "ES63", es_shp$reg_code)
+
+#split census data by country 
+
+#austria 
+at_census_2001 <- merged_census_2001[1:9, ]
+
+#czechia 
+cz_census_2001 <- merged_census_2001[17:24, ]
+
+#denmark 
+dk_census_2001 <- merged_census_2001[25:29, ]
+
+#france 
+fr_census_2001 <- merged_census_2001[48:55, ]
+
+#ireland 
+ie_census_2001 <- merged_census_2001[56:57, ]
+
+#netherlands 
+nl_census_2001 <- merged_census_2001[58:69, ]
+
+#norway 
+no_census_2001 <- merged_census_2001[70:76, ]
+
+#poland 
+pl_census_2001 <- merged_census_2001[77:91, ]
+
+#portugal 
+pt_census_2001 <- merged_census_2001[92:98, ]
+
+#spain 
+es_census_2001 <- merged_census_2001[30:47, ]
+
+#sweden 
+se_census_2001 <- merged_census_2001[99:106, ]
+
+#switzerland 
+ch_census_2001 <- merged_census_2001[10:16, ]
+
+#merge shapefiles with census 2001
+
+at_merged_shp_cen1 <- merge(at_shp, at_census_2001, by = "reg_code")
+
+cz_merged_shp_cen1 <- merge(cz_shp, cz_census_2001, by = "reg_code")
+
+dk_merged_shp_cen1 <- merge(dk_shp, dk_census_2001, by = "reg_code")
+
+fr_merged_shp_cen1 <- merge(fr_shp, fr_census_2001, by = "reg_code")
+
+ie_merged_shp_cen1 <- merge(ie_shp, ie_census_2001, by = "reg_code")
+
+nl_merged_shp_cen1 <- merge(nl_shp, nl_census_2001, by = "reg_code")
+
+no_merged_shp_cen1 <- merge(no_shp, no_census_2001, by = "reg_code")
+
+pl_merged_shp_cen1 <- merge(pl_shp, pl_census_2001, by = "reg_code")
+
+pt_merged_shp_cen1 <- merge(pt_shp, pt_census_2001, by = "reg_code")
+
+se_merged_shp_cen1 <- merge(se_shp, se_census_2001, by = "reg_code")
+
+es_merged_shp_cen1 <- merge(es_shp, es_census_2001, by = "reg_code")
+
+ch_merged_shp_cen1 <- merge(ch_shp, ch_census_2001, by = "reg_code")
+
+#overall 
+eur_shp_merged_cen1 <- merge(eur_shp, merged_census_2001, by = "reg_code")
+
+#do the same for 2011 census data 
+#austria 
+at_census_2011 <- merged_census_2011[1:9, ]
+
+#czechia 
+cz_census_2011 <- merged_census_2011[17:24, ]
+
+#denmark 
+dk_census_2011 <- merged_census_2011[25:29, ]
+
+#france 
+fr_census_2011 <- merged_census_2011[48:55, ]
+
+#ireland 
+ie_census_2011 <- merged_census_2011[56:57, ]
+
+#netherlands 
+nl_census_2011 <- merged_census_2011[58:69, ]
+
+#norway 
+no_census_2011 <- merged_census_2011[70:76, ]
+
+#poland 
+pl_census_2011 <- merged_census_2011[77:91, ]
+
+#portugal 
+pt_census_2011 <- merged_census_2011[92:98, ]
+
+#spain 
+es_census_2011 <- merged_census_2011[30:47, ]
+
+#sweden 
+se_census_2011 <- merged_census_2011[99:106, ]
+
+#switzerland 
+ch_census_2011 <- merged_census_2011[10:16, ]
+
+#merge shapefiles with census 2011
+
+at_merged_shp_cen11 <- merge(at_shp, at_census_2011, by = "reg_code")
+
+cz_merged_shp_cen11 <- merge(cz_shp, cz_census_2011, by = "reg_code")
+
+dk_merged_shp_cen11 <- merge(dk_shp, dk_census_2011, by = "reg_code")
+
+fr_merged_shp_cen11 <- merge(fr_shp, fr_census_2011, by = "reg_code")
+
+ie_merged_shp_cen11 <- merge(ie_shp, ie_census_2011, by = "reg_code")
+
+nl_merged_shp_cen11 <- merge(nl_shp, nl_census_2011, by = "reg_code")
+
+no_merged_shp_cen11 <- merge(no_shp, no_census_2011, by = "reg_code")
+
+pl_merged_shp_cen11 <- merge(pl_shp, pl_census_2011, by = "reg_code")
+
+pt_merged_shp_cen11 <- merge(pt_shp, pt_census_2011, by = "reg_code")
+
+se_merged_shp_cen11 <- merge(se_shp, se_census_2011, by = "reg_code")
+
+es_merged_shp_cen11 <- merge(es_shp, es_census_2011, by = "reg_code")
+
+ch_merged_shp_cen11 <- merge(ch_shp, ch_census_2011, by = "reg_code")
+
+#overall 
+eur_shp_merged_cen11 <- merge(eur_shp, merged_census_2011, by = "reg_code")
+
+#Austria plots, 2001 and 2011
+
+at_hhi_plot_2001 <- ggplot() +
+  geom_sf(at_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
 
 
 
+at_hhi_plot_2011 <- ggplot() +
+  geom_sf(at_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
 
 
 
+at_eth_frac_plots <- ggarrange(at_hhi_plot_2001, at_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+          common.legend = TRUE, legend = "bottom", labels = 
+            "Ethnic Fractionalisation by NUTS 2 Region in Austria", 
+          hjust = -0.45, 
+          font.label = list(size = 10, face = "bold"))
 
 
+png(file = "Dissertation Github/figures/ATEthFracDes1&11.png", 
+    width = 4000, height = 3000, res = 650)
+
+at_eth_frac_plots
+
+dev.off()
+
+#Czechia plots, 2001 and 2011
+
+cz_hhi_plot_2001 <- ggplot() +
+  geom_sf(cz_merged_shp_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+cz_hhi_plot_2011 <- ggplot() +
+  geom_sf(cz_merged_shp_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Blues", direction = 1) + 
+  theme_minimal() +
+  labs(fill = "1 - Hirschman-Herfindahl Index",
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5), 
+        legend.title = element_text(size = 10))
+
+
+
+cz_eth_frac_plots <- ggarrange(cz_hhi_plot_2001, cz_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "Ethnic Fractionalisation by NUTS 2 Region in Czechia", 
+                               hjust = -0.45, 
+                               font.label = list(size = 10, face = "bold"))
+
+
+png(file = "Dissertation Github/figures/CZEthFracDes1&11.png", 
+    width = 4500, height = 3000, res = 650)
+
+cz_eth_frac_plots
+
+dev.off()
+
+
+
+?ggarrange
 
