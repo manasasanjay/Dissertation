@@ -12,6 +12,8 @@ library(lme4)
 library(arm)
 library(car)
 library(kableExtra)
+library(sf)
+library(ggpubr)
 
 
 #------------------------------Cleaning Census Data 2001------------------------
@@ -435,9 +437,6 @@ spain_11 <- add_total_column(spain_11)
 #sweden 
 sweden_11 <- add_total_column(sweden_11)
 
-#switzerland 
-switzerland_11 <- add_total_column(switzerland_11)
-
 #wtf is wrong with switzerland man 
 class(switzerland_11$EU_not_RC)
 class(switzerland_11$Eur_Oth)
@@ -449,6 +448,9 @@ class(switzerland_11$Ocna)
 
 #ah i see stupid oceania has an na 
 switzerland_11$Ocna <- as.numeric(switzerland_11$Ocna)
+
+#switzerland 
+switzerland_11 <- add_total_column(switzerland_11)
 
 #calculate ethnic share for each group and HHI 
 #HHI = sum(eth_share^2)
