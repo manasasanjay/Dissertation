@@ -14,6 +14,7 @@ library(car)
 library(kableExtra)
 library(sf)
 library(ggpubr)
+library(optimx)
 
 
 #------------------------------Cleaning Census Data 2001------------------------
@@ -2591,6 +2592,30 @@ mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround +
                    (1 + Eth_Frac_mc*IRTscores|reg_code), 
                  data = ess_complete)
 summary(mbaseIRT)
+
+# Create a control object with the specified optimizer
+control <- lmerControl(optimizer = "optim")
+
+mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
+                   avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                   crmvct + stflife + stfeco + empl + gndr + agea + 
+                   ins_trst + ctzcntr  + 
+                   lvgptn + (1 + Eth_Frac_mc*IRTscores|reg_code), 
+                 data = ess_complete, 
+                 control = lmerControl(optimizer = "optimx", 
+                                       optCtrl = list(method = "nlminb")))
+summary(mcoreIRT)
+
+
+coef(mcoreIRT)
+
+
+
+
+
+
+
+
 
 
 
