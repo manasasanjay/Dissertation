@@ -1101,6 +1101,8 @@ ess1_a_subset <- ess1_a_subset %>%
     TRUE ~ NA
   ))
 
+unique(ess1_a_subset$hinctnt)
+
 
 #ess1_a_subset <- ess1_a_subset %>%
 # mutate(hinctnt = case_when(
@@ -1181,8 +1183,8 @@ grm_fit <- grm(ess1_IRT1_subset[, c("qfimwht",
                                     "qfimlng", "pplstrd", "qfimchr"
 )])
 grm_fit
-par(mfrow=c(3,2))
-plot(grm_fit)
+#par(mfrow=c(3,2))
+#plot(grm_fit)
 
 grm_scores <- factor.scores.grm(grm_fit,resp.patterns=ess1_IRT1_subset[, 
                        c("qfimwht", 
@@ -1666,6 +1668,8 @@ ess7_a_subset <- ess7_a_subset %>%
     TRUE ~ NA
   ))
 
+unique(ess7_a_subset$hinctnta)
+
 #create a variable for employment. if pdwrk == 1, then employed, if uempla == 1 
 #or uempli == 1, unemployed 
 
@@ -1704,8 +1708,8 @@ grm_fit7 <- grm(ess7_IRT1_subset[, c("qfimwht",
                                      "qfimcmt",
                                      "qfimlng", "pplstrd", "qfimchr")])
 grm_fit7
-par(mfrow=c(2,2))
-plot(grm_fit7)
+#par(mfrow=c(2,2))
+#plot(grm_fit7)
 
 grm_scores7 <- factor.scores.grm(grm_fit7,resp.patterns=ess7_IRT1_subset[, 
                                  c("qfimwht", 
@@ -2528,6 +2532,25 @@ ess7_final_subset <- ess7_final[, c("name", "essround", "edition", "proddate",
                                     "eduyrs", "hinctnta", "icpart2", "imtcjob", 
                                     "imbleco", "imwbcnt", "imwbcrm", "dvrcdeva", 
                                     "rlgdgr", "uemp5yr")]
+
+
+
+colnames(ess7_final_subset)[49] <- "hinctnt"
+colnames(ess7_final_subset)[50] <- "lvgptn"
+colnames(ess7_final_subset)[55] <- "dvrcdev"
+
+#rbind both the datasets together 
+
+ess_complete <- rbind(ess1_final_subset, ess7_final_subset)
+
+
+
+
+
+
+
+
+
 
 
 
