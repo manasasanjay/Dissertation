@@ -1077,6 +1077,14 @@ ess1_a_subset <- ess1_a_subset %>%
     TRUE ~ "No"
   ))
 
+#Native: both parents born in country, born in country, and citizen 
+ess1_a_subset <- ess1_a_subset %>%
+  mutate(native = case_when(
+    facntr == "1" | mocntr == "1" & brncntr == "Yes" & ctzcntr == "Yes" 
+    ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
 
 #recode respondent income: collapse into 8 bins as opposed to the current 12. 
 
@@ -1613,6 +1621,15 @@ ess7_a_subset <- ess7_a_subset %>%
 ess7_a_subset <- ess7_a_subset %>% 
   mutate(nonctzless10 = case_when(
     ctzcntr == "No" & livecnta > 2004 ~ "Yes", 
+    TRUE ~ "No"
+  ))
+
+
+#Native (both parents born in country, born in country)
+ess7_a_subset <- ess7_a_subset %>%
+  mutate(native = case_when(
+    facntr == "1" | mocntr == "1" & brncntr == "Yes" & ctzcntr == "Yes" 
+    ~ "Yes", 
     TRUE ~ "No"
   ))
 
@@ -2474,14 +2491,43 @@ ggarrange(at_eth_frac_plots, cz_eth_frac_plots, dk_eth_frac_plots, fr_eth_frac_p
          font.label = list(size = 14, face = "bold"))
 dev.off()
 
+#------------------------------Analysis-----------------------------------------
 
+#first, subset ess1 and ess7 to have the same variables to rbind. 
 
+ess1_final_subset <- ess1_final[, c("name", "essround", "edition", "proddate", 
+                                    "idno", "cntry", "reg_code", "dweight", 
+                                    "pspwght", "pweight", "anweight", 
+                                    "lrscale", "stflife", "stfeco", "aesfdrk", 
+                                    "ctzcntr", "imsmetn", "imdfetn", "imueclt", 
+                                    "empl", "gndr", "agea", "imptrad", 
+                                    "crmvct", "imbgeco", "dscrrce", "dscrntn", 
+                                    "dscrlng", "dscretn", "blgetmg", "soc_trst", 
+                                    "ins_trst", "secgen", "nat10", "natless10", 
+                                    "nonctz10", "nonctzless10", "native", 
+                                    "IRTscores", "cumulative_response", 
+                                    "HHI", "Eth_Frac", "avgeduyrs", "res_turn", 
+                                    "sin_par_hh", "unemp_rate", "domicil", 
+                                    "eduyrs", "hinctnt", "lvgptn", "imtcjob", 
+                                    "imbleco", "imwbcnt", "imwbcrm", "dvrcdev", 
+                                    "rlgdgr", "uemp5yr")]
 
-
-
-
-
-
+ess7_final_subset <- ess7_final[, c("name", "essround", "edition", "proddate", 
+                                    "idno", "cntry", "reg_code", "dweight", 
+                                    "pspwght", "pweight", "anweight", 
+                                    "lrscale", "stflife", "stfeco", "aesfdrk",
+                                    "ctzcntr", "imsmetn", "imdfetn", "imueclt", 
+                                    "empl", "gndr", "agea", "imptrad", "crmvct", 
+                                    "imbgeco", "dscrrce", "dscrntn", 
+                                    "dscrlng", "dscretn", "blgetmg", "soc_trst", 
+                                    "ins_trst", "secgen", "nat10", "natless10", 
+                                    "nonctz10", "nonctzless10", "native", 
+                                    "IRTscores", "cumulative_response", 
+                                    "HHI", "Eth_Frac", "avgeduyrs", "res_turn", 
+                                    "sin_par_hh", "unemp_rate", "domicil", 
+                                    "eduyrs", "hinctnta", "icpart2", "imtcjob", 
+                                    "imbleco", "imwbcnt", "imwbcrm", "dvrcdeva", 
+                                    "rlgdgr", "uemp5yr")]
 
 
 
