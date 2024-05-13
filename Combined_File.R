@@ -2798,9 +2798,23 @@ mcontactgb <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc +
                    control = lmerControl(optimizer = "optimx", 
                                          optCtrl = list(method = "nlminb")))
 
-summary(mcontactgb)
 
+summary(mcontactgb)
 class(mcontactgb) <- "lmerMod"
+
+mcongbfreq <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
+                       avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                       crmvct + stflife + empl + gndr + agea + 
+                       ins_trst + 
+                       icpart2 + secgen + nat10 + natless10 + 
+                       nonctz10 + nonctzless10 + native + dfegcon + dfeghbg +
+                       (1 + Eth_Frac_mc|reg_code), 
+                     data = ess7_final, 
+                     control = lmerControl(optimizer = "optimx", 
+                                           optCtrl = list(method = "nlminb")))
+
+summary(mcongbfreq)
+class(mcongbfreq) <- "lmerMod"
 
 #stargazer for mbase, mcore, mcore IRT
 
@@ -2808,6 +2822,7 @@ stargazer(mbase, mcore, mcoreIRT, title="Results", align=TRUE)
 
 stargazer(mborn, mimmstat, mimmstatmin, title = "", align = TRUE)
 
-stargazer(mimmstat7, mcontactfreq, mcontactgb, title = "", align = TRUE)
+stargazer(mimmstat7, mcontactgb, mcontactfreq, mcongbfreq, 
+          title = "", align = TRUE)
 
 
