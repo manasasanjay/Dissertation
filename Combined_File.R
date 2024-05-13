@@ -18,6 +18,7 @@ library(optimx)
 library(lmerTest)
 library(data.table)
 library(stargazer)
+library(broom.mixed)
 
 #------------------------------Cleaning Census Data 2001------------------------
 
@@ -1254,6 +1255,8 @@ summary(m2)
 m3 <- lm(ess1_IRT1_subset$imptrad ~ out2$scores2)
 summary(m3)
 
+stargazer(m1, m2, m3, align = TRUE)
+
 
 ess1_final <- merge(ess1_b, merged_census_2001, by = "reg_code", all.x = TRUE)
 
@@ -1761,6 +1764,8 @@ summary(m27)
 #more traditionalist attitudes. 
 m37 <- lm(ess7_IRT1_subset$imptrad ~ out7$scores7)
 summary(m37)
+
+stargazer(m17, m27, m37, align = TRUE)
 
 
 ess7_b <- ess7_IRT1_subset
@@ -2576,6 +2581,8 @@ mbase <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1|reg_code),
               data = ess_complete)
 summary(mbase)
 
+class(mbase) <- "lmerMod"
+
 #run a model with individual and contextual controls, but don't include IRT scores 
 #yet. 
 
@@ -2587,7 +2594,12 @@ mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
               data = ess_complete, 
               control = lmerControl(optimizer = "optimx", 
                                     optCtrl = list(method = "nlminb")))
-summary(mcore)
+mcore_summary <- summary(mcore)
+
+stargazer(mcore_summary)
+
+class(mcore) <- "lmerMod"
+stargazer(mcore)
 
 
 #run a base model without controls, but interacting IRT with eth frac 
@@ -2596,6 +2608,8 @@ mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround +
                    (1 + Eth_Frac_mc|reg_code), 
                  data = ess_complete)
 summary(mbaseIRT)
+
+class(mbaseIRT) <- "lmerMod"
 
 # Create a control object with the specified optimizer
 control <- lmerControl(optimizer = "optim")
@@ -2609,6 +2623,7 @@ mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_
                  control = lmerControl(optimizer = "optimx", 
                                        optCtrl = list(method = "nlminb")))
 summary(mcoreIRT)
+class(mcoreIRT) <- "lmerMod"
 
 vif(mcoreIRT)
 
@@ -2639,6 +2654,8 @@ mborn <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc 
                                     optCtrl = list(method = "nlminb")))
 summary(mborn)
 
+class(mborn) <- "lmerMod"
+
 
 #now run a model with more detailed immigration status of respondents
 mimmstat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
@@ -2654,6 +2671,8 @@ mimmstat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_
 
 summary(mimmstat)
 
+class(mimmstat) <- "lmerMod"
+
 #re run the immigrant status also controlling for whether they are a member of 
 # a minority ethnic group 
 mimmstatmin <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
@@ -2668,6 +2687,8 @@ mimmstatmin <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduy
                                           optCtrl = list(method = "nlminb")))
 
 summary(mimmstatmin)
+
+class(mimmstatmin) <- "lmerMod"
 
 #------------By wave------------------
 
@@ -2696,6 +2717,8 @@ mbase7 <- lmer(soc_trst ~ Eth_Frac_mc + (1 + Eth_Frac_mc|reg_code),
                data = ess7_final)
 summary(mbase7)
 
+class(mbase7) <- "lmerMod"
+
 #run a model with individual and contextual controls, but don't include IRT scores 
 #yet. 
 
@@ -2709,6 +2732,8 @@ mcore7 <- lmer(soc_trst ~ Eth_Frac_mc + hinctnta + eduyrs_mc +
                                      optCtrl = list(method = "nlminb")))
 summary(mcore7)
 
+class(mbase7) <- "lmerMod"
+
 #run a model with IRT 
 mcoreIRT7 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
                  avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
@@ -2719,6 +2744,8 @@ mcoreIRT7 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc +
                control = lmerControl(optimizer = "optimx", 
                                      optCtrl = list(method = "nlminb")))
 summary(mcoreIRT7)
+
+class(mcoreIRT7) <- "lmerMod"
 
 #now run a model with more detailed immigration status of respondents
 mimmstat7 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
@@ -2733,6 +2760,8 @@ mimmstat7 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc +
                                        optCtrl = list(method = "nlminb")))
 
 summary(mimmstat7)
+
+class(mimmstat7) <- "lmerMod"
 
 #run a model controlling for frequency of contact with immigrants and whether
 #contact was good or bad 
@@ -2754,6 +2783,8 @@ mcontactfreq <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc +
 
 summary(mcontactfreq)
 
+class(mcontactfreq) <- "lmerMod"
+
 
 
 mcontactgb <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
@@ -2769,9 +2800,14 @@ mcontactgb <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc +
 
 summary(mcontactgb)
 
+class(mcontactgb) <- "lmerMod"
 
+#stargazer for mbase, mcore, mcore IRT
 
+stargazer(mbase, mcore, mcoreIRT, title="Results", align=TRUE)
 
+stargazer(mborn, mimmstat, mimmstatmin, title = "", align = TRUE)
 
+stargazer(mimmstat7, mcontactfreq, mcontactgb, title = "", align = TRUE)
 
 
