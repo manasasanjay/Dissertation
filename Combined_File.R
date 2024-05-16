@@ -2703,6 +2703,19 @@ summary(mimmstatmin)
 
 class(mimmstatmin) <- "lmerMod"
 
+# Install cachem package
+install.packages("cachem")
+
+# Reinstall yulab.utils and interflex
+install.packages("yulab.utils")
+install.packages("interflex")
+
+library(interflex)
+
+
+
+
+
 #------------By wave------------------
 
 #null model 
