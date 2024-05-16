@@ -19,6 +19,16 @@ library(lmerTest)
 library(data.table)
 library(stargazer)
 library(broom.mixed)
+install.packages('htmltools')
+library(htmltools)
+detach("package:shiny", unload = TRUE)
+detach("package:rmarkdown", unload = TRUE)
+detach("package:kableExtra", unload = TRUE)
+install.packages('devtools', repos = 'http://cran.us.r-project.org') # if not already installed
+devtools::install_github('xuyiqing/interflex')
+
+
+install.packages('interflex', type = "source", repos = 'http://cran.us.r-project.org') 
 
 #------------------------------Cleaning Census Data 2001------------------------
 
@@ -2590,11 +2600,14 @@ mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                 crmvct + stflife + empl + gndr + agea + 
                 ins_trst + 
-                lvgptn + (1 + Eth_Frac_mc|reg_code), 
+                lvgptn + cntry + (1 + Eth_Frac_mc|reg_code), 
               data = ess_complete, 
               control = lmerControl(optimizer = "optimx", 
                                     optCtrl = list(method = "nlminb")))
-mcore_summary <- summary(mcore)
+summary(mcore)
+vif(mcore)
+
+mcore_summary <- s
 
 stargazer(mcore_summary)
 
@@ -2618,7 +2631,7 @@ mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_
                    avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                    crmvct + stflife + empl + gndr + agea + 
                    ins_trst + 
-                   lvgptn + (1 + Eth_Frac_mc|reg_code), 
+                   lvgptn + cntry + (1 + Eth_Frac_mc|reg_code), 
                  data = ess_complete, 
                  control = lmerControl(optimizer = "optimx", 
                                        optCtrl = list(method = "nlminb")))
