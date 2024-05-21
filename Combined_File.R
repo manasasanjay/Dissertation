@@ -2569,7 +2569,8 @@ ess1_final_subset <- ess1_final[, c("name", "essround", "edition", "proddate",
                                     "sin_par_hh", "unemp_rate", "domicil", 
                                     "eduyrs", "hinctnt", "lvgptn", "imtcjob", 
                                     "imbleco", "imwbcnt", "imwbcrm", "dvrcdev", 
-                                    "rlgdgr", "uemp5yr", "brncntr")]
+                                    "rlgdgr", "uemp5yr", "brncntr", 
+                                    "mig_att")]
 
 ess7_final_subset <- ess7_final[, c("name", "essround", "edition", "proddate", 
                                     "idno", "cntry", "reg_code", "dweight", 
@@ -2586,7 +2587,7 @@ ess7_final_subset <- ess7_final[, c("name", "essround", "edition", "proddate",
                                     "sin_par_hh", "unemp_rate", "domicil", 
                                     "eduyrs", "hinctnta", "icpart2", "imtcjob", 
                                     "imbleco", "imwbcnt", "imwbcrm", "dvrcdeva", 
-                                    "rlgdgr", "uemp5yr", "brncntr")]
+                                    "rlgdgr", "uemp5yr", "brncntr", "mig_att")]
 
 
 
@@ -2620,10 +2621,13 @@ ess_complete$eduyrs_mc <- scale(ess_complete$eduyrs, scale = FALSE)
 
 ess_complete$avgeduyrs_mc <- scale(ess_complete$avgeduyrs, scale = FALSE)
 
+ess_complete$IRTscores_mc <- scale(ess_complete$IRTscores, scale = FALSE)
+
 #run a model without any controls, just ethnic fractionalisation on 
 #social trust 
 
-mbase <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1|reg_code), 
+mbase <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 | reg_code:cntry) + 
+                (1 |cntry), 
               data = ess_complete)
 summary(mbase)
 
@@ -2636,14 +2640,13 @@ mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                 crmvct + stflife + empl + gndr + agea + 
                 ins_trst + 
-                lvgptn + cntry + (1 + Eth_Frac_mc|reg_code), 
+                lvgptn + (1 + Eth_Frac_mc|reg_code:cntry) + 
+                (1 + Eth_Frac_mc||cntry), 
               data = ess_complete, 
               control = lmerControl(optimizer = "optimx", 
                                     optCtrl = list(method = "nlminb")))
 summary(mcore)
 vif(mcore)
-
-stargazer(mcore_summary)
 
 class(mcore) <- "lmerMod"
 stargazer(mcore)
@@ -2651,21 +2654,21 @@ stargazer(mcore)
 
 #run a base model without controls, but interacting IRT with eth frac 
 
-mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + 
-                   (1 + Eth_Frac_mc|reg_code), 
+mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
+                   (1 + Eth_Frac_mc|reg_code:cntry) + 
+                   (1 + Eth_Frac_mc||cntry), 
                  data = ess_complete)
 summary(mbaseIRT)
 
 class(mbaseIRT) <- "lmerMod"
 
-# Create a control object with the specified optimizer
-control <- lmerControl(optimizer = "optim")
 
-mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
+mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + eduyrs_mc + 
                    avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                    crmvct + stflife + empl + gndr + agea + 
                    ins_trst + 
-                   lvgptn + cntry + (1 + Eth_Frac_mc|reg_code), 
+                   lvgptn + (1 + Eth_Frac_mc|reg_code:cntry) + 
+                   (1 + Eth_Frac_mc||cntry), 
                  data = ess_complete, 
                  control = lmerControl(optimizer = "optimx", 
                                        optCtrl = list(method = "nlminb")))
