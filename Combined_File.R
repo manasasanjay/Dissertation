@@ -19,16 +19,8 @@ library(lmerTest)
 library(data.table)
 library(stargazer)
 library(broom.mixed)
-install.packages('htmltools')
 library(htmltools)
-detach("package:shiny", unload = TRUE)
-detach("package:rmarkdown", unload = TRUE)
-detach("package:kableExtra", unload = TRUE)
-install.packages('devtools', repos = 'http://cran.us.r-project.org') # if not already installed
-devtools::install_github('xuyiqing/interflex')
 
-
-install.packages('interflex', type = "source", repos = 'http://cran.us.r-project.org') 
 
 #------------------------------Cleaning Census Data 2001------------------------
 
@@ -2607,8 +2599,6 @@ mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
 summary(mcore)
 vif(mcore)
 
-mcore_summary <- s
-
 stargazer(mcore_summary)
 
 class(mcore) <- "lmerMod"
@@ -2715,140 +2705,11 @@ library(interflex)
 
 
 
-
-#------------By wave------------------
-
-#null model 
-mnull7 <- lmer(soc_trst ~ (1|reg_code), data = ess7_final)
-summary(mnull7) #icc = 0.23, MLM makes sense
-
-#first mean centre all controls that are continuous 
-ess7_final$Eth_Frac_mc <- scale(ess7_final$Eth_Frac, scale = FALSE)
-
-ess7_final$res_turn_mc <- scale(ess7_final$res_turn, scale = FALSE)
-
-ess7_final$sin_par_hh_mc <- scale(ess7_final$sin_par_hh, scale = FALSE)
-
-ess7_final$unemp_rate_mc <- scale(ess7_final$unemp_rate, scale = FALSE)
-
-ess7_final$eduyrs_mc <- scale(ess7_final$eduyrs, scale = FALSE)
-
-ess7_final$avgeduyrs_mc <- scale(ess7_final$avgeduyrs, scale = FALSE)
-
-
-#run a model without any controls, just ethnic fractionalisation on 
-#social trust 
-
-mbase7 <- lmer(soc_trst ~ Eth_Frac_mc + (1 + Eth_Frac_mc|reg_code), 
-               data = ess7_final)
-summary(mbase7)
-
-class(mbase7) <- "lmerMod"
-
-#run a model with individual and contextual controls, but don't include IRT scores 
-#yet. 
-
-mcore7 <- lmer(soc_trst ~ Eth_Frac_mc + hinctnta + eduyrs_mc + 
-                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                 crmvct + stflife + empl + gndr + agea + 
-                 ins_trst + 
-                 icpart2 + (1 + Eth_Frac_mc|reg_code), 
-               data = ess7_final, 
-               control = lmerControl(optimizer = "optimx", 
-                                     optCtrl = list(method = "nlminb")))
-summary(mcore7)
-
-class(mbase7) <- "lmerMod"
-
-#run a model with IRT 
-mcoreIRT7 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
-                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                 crmvct + stflife + empl + gndr + agea + 
-                 ins_trst + 
-                 icpart2 + (1 + Eth_Frac_mc|reg_code), 
-               data = ess7_final, 
-               control = lmerControl(optimizer = "optimx", 
-                                     optCtrl = list(method = "nlminb")))
-summary(mcoreIRT7)
-
-class(mcoreIRT7) <- "lmerMod"
-
-#now run a model with more detailed immigration status of respondents
-mimmstat7 <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
-                   avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                   crmvct + stflife + empl + gndr + agea + 
-                   ins_trst + 
-                   icpart2 + secgen + nat10 + natless10 + 
-                   nonctz10 + nonctzless10 + native + 
-                   (1 + Eth_Frac_mc|reg_code), 
-                 data = ess7_final, 
-                 control = lmerControl(optimizer = "optimx", 
-                                       optCtrl = list(method = "nlminb")))
-
-summary(mimmstat7)
-
-class(mimmstat7) <- "lmerMod"
-
-#run a model controlling for frequency of contact with immigrants and whether
-#contact was good or bad 
-
-#relevel contact
-ess7_final <- within(ess7_final, dfegcon <- relevel(factor(dfegcon), 
-                                                    ref = "Every day"))
-
-mcontactfreq <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
-                       avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                       crmvct + stflife + empl + gndr + agea + 
-                       ins_trst + 
-                       icpart2 + secgen + nat10 + natless10 + 
-                       nonctz10 + nonctzless10 + native + dfegcon +
-                       (1 + Eth_Frac_mc|reg_code), 
-                     data = ess7_final, 
-                     control = lmerControl(optimizer = "optimx", 
-                                           optCtrl = list(method = "nlminb")))
-
-summary(mcontactfreq)
-
-class(mcontactfreq) <- "lmerMod"
-
-
-
-mcontactgb <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
-                     avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                     crmvct + stflife + empl + gndr + agea + 
-                     ins_trst + 
-                     icpart2 + secgen + nat10 + natless10 + 
-                     nonctz10 + nonctzless10 + native + dfeghbg +
-                     (1 + Eth_Frac_mc|reg_code), 
-                   data = ess7_final, 
-                   control = lmerControl(optimizer = "optimx", 
-                                         optCtrl = list(method = "nlminb")))
-
-
-summary(mcontactgb)
-class(mcontactgb) <- "lmerMod"
-
-mcongbfreq <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + hinctnta + eduyrs_mc + 
-                       avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                       crmvct + stflife + empl + gndr + agea + 
-                       ins_trst + 
-                       icpart2 + secgen + nat10 + natless10 + 
-                       nonctz10 + nonctzless10 + native + dfegcon + dfeghbg +
-                       (1 + Eth_Frac_mc|reg_code), 
-                     data = ess7_final, 
-                     control = lmerControl(optimizer = "optimx", 
-                                           optCtrl = list(method = "nlminb")))
-
-summary(mcongbfreq)
-class(mcongbfreq) <- "lmerMod"
-
 #stargazer for mbase, mcore, mcore IRT
 
 stargazer(mbase, mcore, mcoreIRT, title="Results", align=TRUE)
 
 stargazer(mborn, mimmstat, mimmstatmin, title = "", align = TRUE)
 
-stargazer(mimmstat7, mcontactgb, mcontactfreq, mcongbfreq, 
-          title = "", align = TRUE)
 
 
