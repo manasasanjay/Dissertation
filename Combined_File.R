@@ -1167,30 +1167,18 @@ ess1_a_subset$blgetmg <- case_match(ess1_a_subset$blgetmg, "1" ~ "Yes",
                                 "2" ~ "No")
 
 
-png(file = "Dissertation GitHub/figures/corrplot1.png",
-    width = 6000, height = 4000, res = 650)
-
-corrplot.mixed(
-  cor(ess1_a_subset[, c("qfimwht", "qfimcmt",
-                        "qfimlng", "pplstrd", "comnlng")],
-      use="complete.obs"),
-  upper="ellipse",tl.cex=0.3)
-
-dev.off()
-
-
 ess1_IRT1_subset <- ess1_a_subset[complete.cases(ess1_a_subset[,
                                c("qfimwht", "qfimcmt",
-                               "qfimlng", "pplstrd",  
+                               "qfimlng",  
                                "qfimchr")]),]
 
 png(file = "Dissertation GitHub/figures/histIRT1.png",
     width = 6000, height = 4000, res = 650)
 hist(rowSums(ess1_IRT1_subset[, c("qfimwht", 
                                   "qfimcmt",
-                                  "qfimlng", "pplstrd", "qfimchr"
+                                  "qfimlng", "qfimchr"
 )]),
-xlab="IDK",main="", br=seq(1,45,1), freq=FALSE)
+xlab="IDK",main="", br=seq(0,40,1), freq=FALSE)
 dev.off()
 
 #okay how about you first rescale everything to be on a scale of 1-5
@@ -1199,28 +1187,31 @@ dev.off()
 
 range(rowSums(ess1_IRT1_subset[, c("qfimwht", 
                                    "qfimcmt",
-                                   "qfimlng", "pplstrd", "qfimchr"
+                                   "qfimlng", "qfimchr"
 )]))
 
 
 #Trying ordinal IRT
 grm_fit <- grm(ess1_IRT1_subset[, c("qfimwht", 
                                     "qfimcmt",
-                                    "qfimlng", "pplstrd", "qfimchr"
+                                    "qfimlng", "qfimchr"
 )])
 grm_fit
+
+summary(grm_fit)
+
 #par(mfrow=c(3,2))
 #plot(grm_fit)
 
 grm_scores <- factor.scores.grm(grm_fit,resp.patterns=ess1_IRT1_subset[, 
                        c("qfimwht", 
                        "qfimcmt",
-                       "qfimlng", "pplstrd", "qfimchr")])
+                       "qfimlng", "qfimchr")])
 out2 <- data.frame(scores2 = grm_scores$score.dat$z1,cumulative_response = 
                      rowSums(ess1_IRT1_subset[, 
                                               c("qfimwht", 
                                                 "qfimcmt",
-                                                "qfimlng", "pplstrd", "qfimchr")]), 
+                                                "qfimlng", "qfimchr")]), 
                    idno = ess1_IRT1_subset$idno)
 
 
@@ -1228,7 +1219,7 @@ out2 <- data.frame(scores2 = grm_scores$score.dat$z1,cumulative_response =
 cronbach.alpha(ess1_IRT1_subset[, 
                                 c("qfimwht", 
                                   "qfimcmt",
-                                  "qfimlng", "pplstrd", "qfimchr")]) #0.55 again
+                                  "qfimlng", "qfimchr")]) #0.55 again
 
 # BaseR
 # plot(jitter(out2$num_correct),out2$scores2,
@@ -1242,7 +1233,7 @@ png(file = "Dissertation GitHub/figures/IRT1plot1.png",
     width = 6000, height = 4000, res = 650)
 ggplot(out2, aes(x=jitter(cumulative_response),y=scores2)) +
   geom_point(size=2,alpha=.5) +
-  scale_x_continuous("Cumulative Responses",breaks = seq(1,45,2)) + 
+  scale_x_continuous("Cumulative Responses",breaks = seq(0,40,2)) + 
   scale_y_continuous("Ordered IRT Score",breaks = seq(-3,3,0.5)) +
   theme_clean() +
   theme(plot.background = element_rect(color=NA))
@@ -1253,7 +1244,7 @@ ess1_b$IRTscores <- grm_scores$score.dat$z1
 ess1_b$cumulative_response <- rowSums(ess1_IRT1_subset[, 
                                                        c("qfimwht", 
                                                          "qfimcmt",
-                                                         "qfimlng", "pplstrd", 
+                                                         "qfimlng", 
                                                          "qfimchr")])
 
 
@@ -1734,27 +1725,27 @@ ess7_a_subset$icpart2 <- case_match(ess7_a_subset$icpart2, "1" ~ "Yes",
 #subset for IRT
 ess7_IRT1_subset <- ess7_a_subset[complete.cases(ess7_a_subset[,
                       c("qfimwht", "qfimcmt",
-                      "qfimlng", "pplstrd", "qfimchr"
+                      "qfimlng", "qfimchr"
                        )]),]
 
 range(rowSums(ess7_IRT1_subset[, c("qfimwht", 
                                    "qfimcmt",
-                                   "qfimlng", "pplstrd", "qfimchr")]))
+                                   "qfimlng", "qfimchr")]))
 
 
 png(file = "Dissertation GitHub/figures/histIRT2.png",
     width = 6000, height = 4000, res = 650)
 hist(rowSums(ess7_IRT1_subset[, c("qfimwht", 
                                   "qfimcmt",
-                                  "qfimlng", "pplstrd", 
+                                  "qfimlng", 
                                   "qfimchr")]), xlab="IDK",main="",
-     br=seq(1,45,1), freq=FALSE)
+     br=seq(0,40,1), freq=FALSE)
 dev.off()
 
 #Trying ordinal IRT
 grm_fit7 <- grm(ess7_IRT1_subset[, c("qfimwht", 
                                      "qfimcmt",
-                                     "qfimlng", "pplstrd", "qfimchr")])
+                                     "qfimlng", "qfimchr")])
 grm_fit7
 #par(mfrow=c(2,2))
 #plot(grm_fit7)
@@ -1762,13 +1753,13 @@ grm_fit7
 grm_scores7 <- factor.scores.grm(grm_fit7,resp.patterns=ess7_IRT1_subset[, 
                                  c("qfimwht", 
                                  "qfimcmt",
-                                 "qfimlng", "pplstrd", "qfimchr")])
+                                 "qfimlng", "qfimchr")])
 
 out7 <- data.frame(scores7 = grm_scores7$score.dat$z1,cumulative_response = 
                      rowSums(ess7_IRT1_subset[, 
                                               c("qfimwht", 
                                                 "qfimcmt",
-                                                "qfimlng", "pplstrd", 
+                                                "qfimlng", 
                                                 "qfimchr")]), 
                    idno = ess7_IRT1_subset$idno)
 
@@ -1780,7 +1771,7 @@ png(file = "Dissertation GitHub/figures/IRT2plot2.png",
     width = 6000, height = 4000, res = 650)
 ggplot(out7, aes(x=jitter(cumulative_response),y=scores7)) +
   geom_point(size=2,alpha=.5) +
-  scale_x_continuous("Cumulative Responses",breaks = seq(1,45,2)) + 
+  scale_x_continuous("Cumulative Responses",breaks = seq(0,40,2)) + 
   scale_y_continuous("Ordered IRT Score",breaks = seq(-3,3,0.5)) +
   theme_clean() +
   theme(plot.background = element_rect(color=NA))
@@ -1811,7 +1802,7 @@ stargazer(m17, m27, m37, align = TRUE)
 #check internal consistency 
 cronbach.alpha(ess7_IRT1_subset[, c("qfimwht", 
                                     "qfimcmt",
-                                    "qfimlng", "pplstrd", "qfimchr")])
+                                    "qfimlng", "qfimchr")])
 
 #alpha of 0.55
 
@@ -1820,7 +1811,7 @@ ess7_b$IRTscores <- grm_scores7$score.dat$z1
 ess7_b$cumulative_response <- rowSums(ess7_IRT1_subset[, 
                                                        c("qfimwht", 
                                                          "qfimcmt",
-                                                         "qfimlng", "pplstrd", 
+                                                         "qfimlng",  
                                                          "qfimchr")])
 
 #merge with census data
@@ -2685,9 +2676,6 @@ plot(lm(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
           crmvct + stflife + empl + gndr + agea + 
           ins_trst + lvgptn, data = ess_complete_small))
 
-outlier_indices <- c(26361, 37468)
-outliers <- ess_complete_small[outlier_indices, ]
-print(outliers)
 
 lm_model <- lm(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
                  avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
@@ -2696,10 +2684,15 @@ lm_model <- lm(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
 
 # Calculate Cook's distance
 cooks_distance <- cooks.distance(lm_model)
+plot(cooks_distance)
+influencePlot(cooks_distance)
 
 # Plot Cook's distance
 plot(cooks_distance, type = "h", main = "Cook's Distance", ylab = "Cook's Distance")
 abline(h = 4 / nrow(ess_complete_small), col = "red") 
+
+#create vector of outliers, exclude 
+outlier_indices <- c(24521, 26778, 28787, 30124, 37877)
 
 # Remove outliers
 ess_complete_small_no_outliers <- ess_complete_small[!rownames(ess_complete_small) %in% outlier_indices, ]
@@ -2833,6 +2826,7 @@ mbasevar <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 + Eth_Frac_mc | reg_code
                 (1 |cntry), 
               data = ess_complete_s)
 summary(mbasevar)
+class(mbasevar) <- "lmerMod"
 
 #run core model with controls, but without IRT
 mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
@@ -2845,6 +2839,7 @@ mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
                                     optCtrl = list()))
 
 summary(mcore)
+class(mcore) <- "lmerMod"
 vif(mcore)
 
 #run core model varying eth het by region 
@@ -2858,6 +2853,7 @@ mcorevar <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
                                     optCtrl = list()))
 
 summary(mcorevar)
+class(mcorevar) <- "lmerMod"
 
 #run base model without controls and with IRT 
 mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
@@ -2866,6 +2862,7 @@ mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround +
                  control = lmerControl(optimizer = "bobyqa", 
                  optCtrl = list()))
 summary(mbaseIRT)
+class(mbaseIRT) <- "lmerMod"
 
 #run base with IRT varying Eth Het by region 
 mbaseIRTvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
@@ -2874,6 +2871,7 @@ mbaseIRTvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround +
                  control = lmerControl(optimizer = "bobyqa", 
                                        optCtrl = list()))
 summary(mbaseIRTvar)
+class(mbaseIRTvar) <- "lmerMod"
 
 
 #run core model with controls and IRT
@@ -2886,6 +2884,7 @@ mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
               control = lmerControl(optimizer = "bobyqa", 
                                     optCtrl = list()))
 summary(mcoreIRT)
+class(mcoreIRT) <- "lmerMod"
 
 #run core IRT model varying eth het by region 
 mcoreIRTvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
@@ -2897,6 +2896,7 @@ mcoreIRTvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
                  control = lmerControl(optimizer = "bobyqa", 
                                        optCtrl = list()))
 summary(mcoreIRTvar)
+class(mcoreIRTvar) <- "lmerMod"
 
 #control for perceived negative consequences of immigration 
 mIRTattim <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
@@ -2909,6 +2909,7 @@ mIRTattim <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
                                         optCtrl = list()))
 summary(mIRTattim) #magnitude of interaction decreases slightly and effect of 
 #eth het more positive but still not statistically significant. 
+class(mIRTattim) <- "lmerMod"
 
 #run controlled IRT varying eth het by region 
 mIRTattimvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
@@ -2920,6 +2921,7 @@ mIRTattimvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
                   control = lmerControl(optimizer = "bobyqa", 
                                         optCtrl = list()))
 summary(mIRTattimvar)
+class(mIRTattimvar) <- "lmerMod"
 
 #restrict sample to only natives 
 ess_complete_native <- ess_complete_s[ess_complete_s$native == "Yes", ]
@@ -2929,6 +2931,7 @@ mbasenat <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 | reg_code:cntry) +
                 (1 |cntry), 
               data = ess_complete_native)
 summary(mbasenat)
+class(mbasenat) <- "lmerMod"
 
 #rerun core model 
 mcorenat <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
@@ -2940,7 +2943,8 @@ mcorenat <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
               control = lmerControl(optimizer = "optimx", 
                                     optCtrl = list(method = "nlminb")))
 
-glmm_all = allFit(mcorenat)
+summary(mcorenat)
+class(mcorenat) <- "lmerMod"
 vif(mcorenat)
 
 #rerun base model with IRT
@@ -2950,6 +2954,7 @@ mbaseIRTnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround +
                  control = lmerControl(optimizer = "optimx", 
                                        optCtrl = list(method = "nlminb")))
 summary(mbaseIRTnat)
+class(mbaseIRTnat) <- "lmerMod"
 
 
 #rerun core model with IRT
@@ -2962,7 +2967,7 @@ mcoreIRTnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
                     control = lmerControl(optimizer = "optimx", 
                                           optCtrl = list(method = "nlminb")))
 summary(mcoreIRTnat) 
-
+class(mcoreIRTnat) <- "lmerMod"
 
 #control for attitudes towards immigration 
 mIRTattimnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
@@ -2974,7 +2979,7 @@ mIRTattimnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
                   control = lmerControl(optimizer = "optimx", 
                                         optCtrl = list(method = "nlminb")))
 summary(mIRTattimnat)
-
+class(mIRTattimnat) <- "lmerMod"
 
 
 
@@ -3026,7 +3031,7 @@ out <- interflex(Y = "soc_trst", D = "Eth_Frac_mc", X = "IRTscores_mc",
                  na.rm = TRUE, theme.bw = TRUE, show.grid = FALSE)
 out$figure
 
-
+unique(ess_complete_s$cntry)
 
 
 
