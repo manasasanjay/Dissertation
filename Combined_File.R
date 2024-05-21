@@ -966,6 +966,24 @@ ess1_a_subset$ins_trst <- ifelse(ess1_a_subset$instrst_resp_no >= 2,
                                                             "trstprl")], 
                                           na.rm = TRUE), NA)
 
+#create composite measure for perceived consequences of immigration 
+#check internal consistency 
+cronbach.alpha(!is.na(ess1_a_subset[, c("imtcjob", 
+                                 "imbleco", 
+                                 "imwbcrm", 
+                                 "imwbcnt")])) #0.68
+
+ess1_a_subset$migatt_resp_no <- rowSums(!is.na(ess1_a_subset[, c("imtcjob", 
+                                                                 "imbleco", 
+                                                                 "imwbcrm", 
+                                                                 "imwbcnt")]))
+ess1_a_subset$mig_att <- ifelse(ess1_a_subset$migatt_resp_no >= 2, 
+                                rowMeans(ess1_a_subset[,c("imtcjob", 
+                                                          "imbleco", 
+                                                          "imwbcrm", 
+                                                          "imwbcnt") ], 
+                                         na.rm = TRUE), NA)
+
 
 #recode categorical variables 
 #preferred decision level of immigration and refugee policies 
@@ -1205,7 +1223,11 @@ out2 <- data.frame(scores2 = grm_scores$score.dat$z1,cumulative_response =
                    idno = ess1_IRT1_subset$idno)
 
 
-
+#check internal consistency 
+cronbach.alpha(ess1_IRT1_subset[, 
+                                c("qfimwht", 
+                                  "qfimcmt",
+                                  "qfimlng", "pplstrd", "qfimchr")]) #0.55 again
 
 # BaseR
 # plot(jitter(out2$num_correct),out2$scores2,
@@ -1536,6 +1558,22 @@ ess7_a_subset$ins_trst <- ifelse(ess7_a_subset$instrst_resp_no >= 2,
                                                             "trstprl")], 
                                           na.rm = TRUE), NA)
 
+#create a composite measure of perceived consequences of immigration
+cronbach.alpha(!is.na(ess7_a_subset[, c("imtcjob", 
+                                        "imbleco", #0.56
+                                        "imwbcrm", 
+                                        "imwbcnt")]))
+ess7_a_subset$migatt_resp_no <- rowSums(!is.na(ess7_a_subset[, c("imtcjob", 
+                                                                 "imbleco", 
+                                                                 "imwbcrm", 
+                                                                 "imwbcnt")]))
+ess7_a_subset$mig_att <- ifelse(ess7_a_subset$migatt_resp_no >= 2, 
+                                rowMeans(ess7_a_subset[,c("imtcjob", 
+                                                          "imbleco", 
+                                                          "imwbcrm", 
+                                                          "imwbcnt") ], 
+                                         na.rm = TRUE), NA)
+
 #recode categorical variables 
 
 
@@ -1769,6 +1807,12 @@ summary(m37)
 
 stargazer(m17, m27, m37, align = TRUE)
 
+#check internal consistency 
+cronbach.alpha(ess7_IRT1_subset[, c("qfimwht", 
+                                    "qfimcmt",
+                                    "qfimlng", "pplstrd", "qfimchr")])
+
+#alpha of 0.55
 
 ess7_b <- ess7_IRT1_subset
 ess7_b$IRTscores <- grm_scores7$score.dat$z1
@@ -2693,13 +2737,7 @@ summary(mimmstatmin)
 
 class(mimmstatmin) <- "lmerMod"
 
-# Install cachem package
-install.packages("cachem")
-
-# Reinstall yulab.utils and interflex
-install.packages("yulab.utils")
-install.packages("interflex")
-
+#load interflex
 library(interflex)
 
 
