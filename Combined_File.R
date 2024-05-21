@@ -2975,34 +2975,56 @@ mIRTattimnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
                                         optCtrl = list(method = "nlminb")))
 summary(mIRTattimnat)
 
-#-----------------plotting interaction effects using interflex------------------
-#mcoreIRTvar
-#extract linear marginal effects 
-me1 <- fixef(mcoreIRTvar)[1] + fixef(mcoreIRTvar)[2]*ess_complete_s$Eth_Frac_mc +
-  fixef(mcoreIRTvar)[3]*ess_complete_s$IRTscores_mc + fixef(mcoreIRTvar)[16]*mean(ess_complete_s$eduyrs_mc, na.rm = TRUE) + 
-  fixef(mcoreIRTvar)[17]*mean(ess_complete_s$avgeduyrs_mc, na.rm = TRUE) + 
-  fixef(mcoreIRTvar)[18]*mean(ess_complete_s$res_turn_mc, na.rm = TRUE) + 
-  fixef(mcoreIRTvar)[19]*mean(ess_complete_s$sin_par_hh_mc, na.rm = TRUE) + 
-  fixef(mcoreIRTvar)[20]*mean(ess_complete_s$unemp_rate_mc, na.rm = TRUE) + 
-  fixef(mcoreIRTvar)[22]*mean(ess_complete_s$stflife, na.rm = TRUE) + 
-  fixef(mcoreIRTvar)[25]*mean(ess_complete_s$agea, na.rm = TRUE) + 
-  fixef(mcoreIRTvar)[26]*mean(ess_complete_s$ins_trst, na.rm = TRUE) + 
-  fixef(mcoreIRTvar)[28]*ess_complete_s$Eth_Frac_mc*ess_complete_s$IRTscores_mc
 
-#bind into dataframe 
-medata1 <- cbind.data.frame(Y = me1, D = ess_complete_s$Eth_Frac_mc, 
-                            X = ess_complete_s$IRTscores_mc)
 
-#raw plot 
-interflex(estimator = "raw", Y = "Y", D = "D", X = "X", data = medata1, 
-          Ylabel = "Outcome", Dlabel = "Treatment", Xlabel="Moderator", 
+
+#-----------------using interflex to model the interaction----------------------
+#full model IRT  
+controls1 <- c("hinctnt", "eduyrs_mc", "avgeduyrs_mc", "res_turn_mc",
+               "sin_par_hh_mc", "unemp_rate_mc", "crmvct", 
+               "stflife", "empl", "gndr", "agea", "ins_trst", 
+               "lvgptn")
+
+FE1 <- c("essround",
+         "reg_code")
+
+sapply(ess_complete_s[controls1], class)
+ess_complete_s$hinctnt <- as.factor(ess_complete_s$hinctnt)
+ess_complete_s$crmvct <- as.factor(ess_complete_s$crmvct)
+ess_complete_s$empl <- as.factor(ess_complete_s$empl)
+ess_complete_s$gndr <- as.factor(ess_complete_s$gndr)
+ess_complete_s$lvgptn <- as.factor(ess_complete_s$lvgptn)
+
+
+
+interflex(estimator = "raw", Y = "soc_trst", D = "Eth_Frac_mc", 
+          X = "IRTscores_mc", Z = controls1, FE = FE1, data = ess_complete_s, 
+          Ylabel = "Trust", Dlabel = "Ethnic Heterogeneity", 
+          Xlabel="Preference for Homogeneity", 
           theme.bw = TRUE, show.grid = FALSE, ncols=3, na.rm = TRUE)
 
-out <- interflex(Y = "Y", D = "D", X = "X", 
-                 data = medata1, estimator = "binning", 
-                 Xdistr = "density", bin.labs = FALSE, na.rm = TRUE)
+
+out <- interflex(Y = "soc_trst", D = "Eth_Frac_mc", X = "IRTscores_mc", 
+                 Z = controls1, FE = FE1, data = ess_complete_s, 
+                 estimator = "binning", cutoff = c(1, 2, 4, 5), 
+                 theme.bw = TRUE, na.rm = TRUE)
+
+
 out$figure
 
+out <- interflex(Y = "soc_trst", D = "Eth_Frac_mc", X = "IRTscores_mc", 
+                 Z = controls1, FE = FE1, data = ess_complete_s, 
+                 estimator = "binning", Xdistr = "density", bin.labs = FALSE, 
+                 na.rm = TRUE, theme.bw = TRUE, show.grid = FALSE)
+out$figure
+
+#try with clustering at the region level 
+out <- interflex(Y = "soc_trst", D = "Eth_Frac_mc", X = "IRTscores_mc", 
+                 Z = controls1, FE = FE1, data = ess_complete_s, 
+                 estimator = "binning", Xdistr = "density", cl = "reg_code", 
+                 bin.labs = FALSE, 
+                 na.rm = TRUE, theme.bw = TRUE, show.grid = FALSE)
+out$figure
 
 
 
