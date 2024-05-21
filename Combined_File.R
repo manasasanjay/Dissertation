@@ -20,6 +20,7 @@ library(data.table)
 library(stargazer)
 library(broom.mixed)
 library(htmltools)
+library(nloptr)
 
 
 #------------------------------Cleaning Census Data 2001------------------------
@@ -2550,7 +2551,7 @@ ggarrange(at_eth_frac_plots, cz_eth_frac_plots, dk_eth_frac_plots, fr_eth_frac_p
          font.label = list(size = 14, face = "bold"))
 dev.off()
 
-#------------------------------Analysis-----------------------------------------
+#------------------------------Draft Analysis-----------------------------------------
 
 #first, subset ess1 and ess7 to have the same variables to rbind. 
 
@@ -2623,6 +2624,14 @@ ess_complete$avgeduyrs_mc <- scale(ess_complete$avgeduyrs, scale = FALSE)
 
 ess_complete$IRTscores_mc <- scale(ess_complete$IRTscores, scale = FALSE)
 
+#given that base model to core model eliminates 4 countries: AT, CZ, NO, SE, 
+#try running a model with just the remaining 8 countries to see if the effect 
+#on eth frac is driven by smaller contextual units disappearing or if it's the 
+#adding of the controls 
+
+ess_complete_small <- ess_complete[!(ess_complete$cntry %in% c("AT", "CZ", "NO", 
+                                                             "SE")), ]
+
 #run a model without any controls, just ethnic fractionalisation on 
 #social trust 
 
@@ -2630,6 +2639,12 @@ mbase <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 | reg_code:cntry) +
                 (1 |cntry), 
               data = ess_complete)
 summary(mbase)
+
+#run base on smaller dataset 
+mbase_s <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 | reg_code:cntry) + 
+                  (1 |cntry), 
+                data = ess_complete_small)
+summary(mbase_s)
 
 class(mbase) <- "lmerMod"
 
@@ -2650,6 +2665,59 @@ vif(mcore)
 
 class(mcore) <- "lmerMod"
 stargazer(mcore)
+
+#run core model on smaller dataset 
+mcore_s <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
+                  avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                  crmvct + stflife + empl + gndr + agea + 
+                  ins_trst + 
+                  lvgptn + (1 + Eth_Frac_mc|reg_code:cntry) + 
+                  (1 + Eth_Frac_mc||cntry), 
+                data = ess_complete_small, 
+                control = lmerControl(optimizer = "optimx", 
+                                      optCtrl = list(method = "nlminb")))
+
+summary(mcore_s)
+
+#convergence issues, potentially due to outliers. check 
+plot(lm(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
+          avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+          crmvct + stflife + empl + gndr + agea + 
+          ins_trst + lvgptn, data = ess_complete_small))
+
+outlier_indices <- c(26361, 37468)
+outliers <- ess_complete_small[outlier_indices, ]
+print(outliers)
+
+lm_model <- lm(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
+                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                 crmvct + stflife + empl + gndr + agea + 
+                 ins_trst + lvgptn, data = ess_complete_small)
+
+# Calculate Cook's distance
+cooks_distance <- cooks.distance(lm_model)
+
+# Plot Cook's distance
+plot(cooks_distance, type = "h", main = "Cook's Distance", ylab = "Cook's Distance")
+abline(h = 4 / nrow(ess_complete_small), col = "red") 
+
+# Remove outliers
+ess_complete_small_no_outliers <- ess_complete_small[!rownames(ess_complete_small) %in% outlier_indices, ]
+
+# Refit the model without the outliers
+mcore_s_no_outliers <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
+                              avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                              crmvct + stflife + empl + gndr + agea + 
+                              ins_trst + lvgptn + (1 + Eth_Frac_mc | reg_code:cntry) + 
+                              (1 + Eth_Frac_mc || cntry), 
+                            data = ess_complete_small_no_outliers, 
+                            control = lmerControl(optimizer = "optimx", 
+                            optCtrl = list(method = "nlminb")))
+
+summary(mcore_s_no_outliers)
+
+#positive effect due to controls, but not statistically significant. use smaller 
+#dataset 
 
 
 #run a base model without controls, but interacting IRT with eth frac 
@@ -2676,15 +2744,6 @@ summary(mcoreIRT)
 class(mcoreIRT) <- "lmerMod"
 
 vif(mcoreIRT)
-
-#two tailed test, p-value < 0.0051
-2*pt(-3.140, 29)
-
-#continuous 2-way interaction, predict ethnic fractionalisation's impact on 
-#social trust, conditional on perceived/preferred homogeneity at the minimum, 
-#lower quartile, mean, upper quartile, and maximum values. 
-
-
 
 coef(mcoreIRT)
 
@@ -2751,6 +2810,131 @@ library(interflex)
 stargazer(mbase, mcore, mcoreIRT, title="Results", align=TRUE)
 
 stargazer(mborn, mimmstat, mimmstatmin, title = "", align = TRUE)
+
+#-----------------------------Models--------------------------------------------
+library(minqa)
+#create new dataset with the smaller dataset without outliers
+ess_complete_s <- ess_complete_small_no_outliers
+
+#run a null model 
+mnull <- lmer(soc_trst ~ 1 + (1|reg_code:cntry) + (1|cntry), 
+              data = ess_complete_s)
+summary(mnull)
+
+#run the base model 
+mbase <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 | reg_code:cntry) + 
+                (1 |cntry), 
+              data = ess_complete_s)
+summary(mbase)
+class(mbase) <- "lmerMod"
+
+#run core model with controls, but without IRT
+mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
+                avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                crmvct + stflife + empl + gndr + agea + 
+                ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                (1 | cntry), 
+              data = ess_complete_s, 
+              control = lmerControl(optimizer = "bobyqa", 
+                                    optCtrl = list()))
+
+summary(mcore)
+vif(mcore)
+
+#run base model without controls and with IRT 
+mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
+                   (1 + Eth_Frac_mc | reg_code:cntry) +
+                   (1 | cntry), data = ess_complete_s, 
+                 control = lmerControl(optimizer = "bobyqa", 
+                 optCtrl = list()))
+summary(mbaseIRT)
+
+
+#run core model with controls and IRT
+mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
+                   eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
+                   unemp_rate_mc + crmvct + stflife + empl + gndr + agea + 
+                   ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                   (1|cntry), 
+              data = ess_complete_s, 
+              control = lmerControl(optimizer = "bobyqa", 
+                                    optCtrl = list()))
+summary(mcoreIRT)
+
+#control for perceived negative consequences of immigration 
+mIRTattim <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
+                    eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
+                    unemp_rate_mc + crmvct + stflife + empl + gndr + agea + mig_att + 
+                    ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                    (1|cntry), 
+                  data = ess_complete_s, 
+                  control = lmerControl(optimizer = "bobyqa", 
+                                        optCtrl = list()))
+summary(mIRTattim) #magnitude of interaction decreases slightly and effect of 
+#eth het more positive but still not statistically significant. 
+
+
+#restrict sample to only natives 
+ess_complete_native <- ess_complete_s[ess_complete_s$native == "Yes", ]
+
+#rerun base model 
+mbasenat <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 | reg_code:cntry) + 
+                (1 |cntry), 
+              data = ess_complete_native)
+summary(mbasenat)
+
+#rerun core model 
+mcorenat <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
+                avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                crmvct + stflife + empl + gndr + agea + 
+                ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                (1 | cntry), 
+              data = ess_complete_native, 
+              control = lmerControl(optimizer = "optimx", 
+                                    optCtrl = list(method = "nlminb")))
+
+glmm_all = allFit(mcorenat)
+vif(mcorenat)
+
+#rerun base model with IRT
+mbaseIRTnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
+                   (1 | reg_code:cntry) +
+                   (1 | cntry), data = ess_complete_native, 
+                 control = lmerControl(optimizer = "optimx", 
+                                       optCtrl = list(method = "nlminb")))
+summary(mbaseIRTnat)
+
+
+#rerun core model with IRT
+mcoreIRTnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
+                      eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
+                      unemp_rate_mc + crmvct + stflife + empl + gndr + agea + 
+                      ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                      (1|cntry), 
+                    data = ess_complete_native, 
+                    control = lmerControl(optimizer = "optimx", 
+                                          optCtrl = list(method = "nlminb")))
+summary(mcoreIRTnat) 
+
+
+#control for attitudes towards immigration 
+mIRTattimnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
+                    eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
+                    unemp_rate_mc + crmvct + stflife + empl + gndr + agea + mig_att + 
+                    ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                    (1|cntry), 
+                  data = ess_complete_native, 
+                  control = lmerControl(optimizer = "optimx", 
+                                        optCtrl = list(method = "nlminb")))
+summary(mIRTattimnat)
+
+
+
+
+
+
+
+
 
 
 
