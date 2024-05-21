@@ -2828,6 +2828,12 @@ mbase <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 | reg_code:cntry) +
 summary(mbase)
 class(mbase) <- "lmerMod"
 
+#run base model varying Eth Het by region 
+mbasevar <- lmer(soc_trst ~ Eth_Frac_mc + essround + (1 + Eth_Frac_mc | reg_code:cntry) + 
+                (1 |cntry), 
+              data = ess_complete_s)
+summary(mbasevar)
+
 #run core model with controls, but without IRT
 mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
@@ -2841,13 +2847,33 @@ mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc +
 summary(mcore)
 vif(mcore)
 
+#run core model varying eth het by region 
+mcorevar <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
+                avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
+                crmvct + stflife + empl + gndr + agea + 
+                ins_trst + lvgptn + (1 + Eth_Frac_mc | reg_code:cntry) + 
+                (1 | cntry), 
+              data = ess_complete_s, 
+              control = lmerControl(optimizer = "bobyqa", 
+                                    optCtrl = list()))
+
+summary(mcorevar)
+
 #run base model without controls and with IRT 
 mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
-                   (1 + Eth_Frac_mc | reg_code:cntry) +
+                   (1 | reg_code:cntry) +
                    (1 | cntry), data = ess_complete_s, 
                  control = lmerControl(optimizer = "bobyqa", 
                  optCtrl = list()))
 summary(mbaseIRT)
+
+#run base with IRT varying Eth Het by region 
+mbaseIRTvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
+                   (1 + Eth_Frac_mc | reg_code:cntry) +
+                   (1 | cntry), data = ess_complete_s, 
+                 control = lmerControl(optimizer = "bobyqa", 
+                                       optCtrl = list()))
+summary(mbaseIRTvar)
 
 
 #run core model with controls and IRT
@@ -2861,6 +2887,17 @@ mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
                                     optCtrl = list()))
 summary(mcoreIRT)
 
+#run core IRT model varying eth het by region 
+mcoreIRTvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
+                   eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
+                   unemp_rate_mc + crmvct + stflife + empl + gndr + agea + 
+                   ins_trst + lvgptn + (1 + Eth_Frac_mc | reg_code:cntry) + 
+                   (1|cntry), 
+                 data = ess_complete_s, 
+                 control = lmerControl(optimizer = "bobyqa", 
+                                       optCtrl = list()))
+summary(mcoreIRTvar)
+
 #control for perceived negative consequences of immigration 
 mIRTattim <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
                     eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
@@ -2873,6 +2910,16 @@ mIRTattim <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
 summary(mIRTattim) #magnitude of interaction decreases slightly and effect of 
 #eth het more positive but still not statistically significant. 
 
+#run controlled IRT varying eth het by region 
+mIRTattimvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
+                    eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
+                    unemp_rate_mc + crmvct + stflife + empl + gndr + agea + mig_att + 
+                    ins_trst + lvgptn + (1 + Eth_Frac_mc | reg_code:cntry) + 
+                    (1|cntry), 
+                  data = ess_complete_s, 
+                  control = lmerControl(optimizer = "bobyqa", 
+                                        optCtrl = list()))
+summary(mIRTattimvar)
 
 #restrict sample to only natives 
 ess_complete_native <- ess_complete_s[ess_complete_s$native == "Yes", ]
@@ -2928,10 +2975,33 @@ mIRTattimnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
                                         optCtrl = list(method = "nlminb")))
 summary(mIRTattimnat)
 
+#-----------------plotting interaction effects using interflex------------------
+#mcoreIRTvar
+#extract linear marginal effects 
+me1 <- fixef(mcoreIRTvar)[1] + fixef(mcoreIRTvar)[2]*ess_complete_s$Eth_Frac_mc +
+  fixef(mcoreIRTvar)[3]*ess_complete_s$IRTscores_mc + fixef(mcoreIRTvar)[16]*mean(ess_complete_s$eduyrs_mc, na.rm = TRUE) + 
+  fixef(mcoreIRTvar)[17]*mean(ess_complete_s$avgeduyrs_mc, na.rm = TRUE) + 
+  fixef(mcoreIRTvar)[18]*mean(ess_complete_s$res_turn_mc, na.rm = TRUE) + 
+  fixef(mcoreIRTvar)[19]*mean(ess_complete_s$sin_par_hh_mc, na.rm = TRUE) + 
+  fixef(mcoreIRTvar)[20]*mean(ess_complete_s$unemp_rate_mc, na.rm = TRUE) + 
+  fixef(mcoreIRTvar)[22]*mean(ess_complete_s$stflife, na.rm = TRUE) + 
+  fixef(mcoreIRTvar)[25]*mean(ess_complete_s$agea, na.rm = TRUE) + 
+  fixef(mcoreIRTvar)[26]*mean(ess_complete_s$ins_trst, na.rm = TRUE) + 
+  fixef(mcoreIRTvar)[28]*ess_complete_s$Eth_Frac_mc*ess_complete_s$IRTscores_mc
 
+#bind into dataframe 
+medata1 <- cbind.data.frame(Y = me1, D = ess_complete_s$Eth_Frac_mc, 
+                            X = ess_complete_s$IRTscores_mc)
 
+#raw plot 
+interflex(estimator = "raw", Y = "Y", D = "D", X = "X", data = medata1, 
+          Ylabel = "Outcome", Dlabel = "Treatment", Xlabel="Moderator", 
+          theme.bw = TRUE, show.grid = FALSE, ncols=3, na.rm = TRUE)
 
-
+out <- interflex(Y = "Y", D = "D", X = "X", 
+                 data = medata1, estimator = "binning", 
+                 Xdistr = "density", bin.labs = FALSE, na.rm = TRUE)
+out$figure
 
 
 
