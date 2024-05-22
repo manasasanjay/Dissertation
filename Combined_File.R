@@ -1198,7 +1198,7 @@ grm_fit <- grm(ess1_IRT1_subset[, c("qfimwht",
 )])
 grm_fit
 
-summary(grm_fit)
+
 
 #par(mfrow=c(3,2))
 #plot(grm_fit)
@@ -1219,7 +1219,7 @@ out2 <- data.frame(scores2 = grm_scores$score.dat$z1,cumulative_response =
 cronbach.alpha(ess1_IRT1_subset[, 
                                 c("qfimwht", 
                                   "qfimcmt",
-                                  "qfimlng", "qfimchr")]) #0.55 again
+                                  "qfimlng", "qfimchr")]) #0.68 again
 
 # BaseR
 # plot(jitter(out2$num_correct),out2$scores2,
@@ -1785,12 +1785,18 @@ dev.off()
 m17 <- lm(ess7_IRT1_subset$imdfetn ~ out7$scores7) 
 summary(m17)
 
+cor.test(ess7_IRT1_subset$imdfetn, out7$scores7,  method = "pearson", 
+    use = "complete.obs") #0.43
+
 
 #same for migrants of the same ethnicity. Still positively correlated indicating 
 #that it is predictive of anti-immigrant attitudes overall, but it is less positively 
 #correlated than for the measure about allowing migrants of different ethnicities. 
 m27 <- lm(ess7_IRT1_subset$imsmetn ~ out7$scores7)
 summary(m27)
+
+cor.test(ess7_IRT1_subset$imsmetn, out7$scores7,  method = "pearson", 
+         use = "complete.obs") #0.34
 
 #negatively correlated with importance of tradition, which implies that it predicts
 #more traditionalist attitudes. 
@@ -1804,7 +1810,7 @@ cronbach.alpha(ess7_IRT1_subset[, c("qfimwht",
                                     "qfimcmt",
                                     "qfimlng", "qfimchr")])
 
-#alpha of 0.55
+#alpha of 0.69
 
 ess7_b <- ess7_IRT1_subset
 ess7_b$IRTscores <- grm_scores7$score.dat$z1
@@ -1949,6 +1955,10 @@ ch_merged_shp_cen1 <- merge(ch_shp, ch_census_2001, by = "reg_code")
 #overall 
 eur_shp_merged_cen1 <- merge(eur_shp, merged_census_2001, by = "reg_code")
 
+eur_shp_merged_cen1 <- eur_shp_merged_cen1[!(eur_shp_merged_cen1$CNTR_CODE %in%
+                                               c("AT", "CZ", "NO", 
+                                                             "SE")), ]
+
 #do the same for 2011 census data 
 #austria 
 at_census_2011 <- merged_census_2011[1:9, ]
@@ -2014,6 +2024,66 @@ ch_merged_shp_cen11 <- merge(ch_shp, ch_census_2011, by = "reg_code")
 
 #overall 
 eur_shp_merged_cen11 <- merge(eur_shp, merged_census_2011, by = "reg_code")
+
+eur_shp_merged_cen11 <- eur_shp_merged_cen11[!(eur_shp_merged_cen11$CNTR_CODE %in%
+                                                 c("AT", "CZ", "NO", 
+                                                   "SE")), ]
+
+#overall Europe plots 2001 and 2011
+eur_hhi_plot_2001 <- ggplot() + 
+  geom_sf(eur_shp_merged_cen1, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Greys", direction = 1) + 
+  theme_minimal() + 
+  labs(fill = "Ethnic Fractionalisation", 
+       title = "2001") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5, size = 6), 
+        legend.title = element_text(size = 6), 
+        legend.key.size = unit(0.4, "cm"),  
+        legend.key.height = unit(0.3, "cm"), 
+        legend.key.width = unit(0.3, "cm"), 
+        legend.text = element_text(size = 5))
+
+png(file = "Dissertation Github/figures/Eurhhi01.png", 
+    width = 3000, height = 2000, res = 650)
+eur_hhi_plot_2001
+dev.off()
+
+?theme
+
+eur_hhi_plot_2011 <- ggplot() + 
+  geom_sf(eur_shp_merged_cen11, mapping = aes(fill = Eth_Frac)) + 
+  scale_fill_distiller(type = "seq", palette = "Greys", direction = 1) + 
+  theme_minimal() + 
+  labs(fill = "Ethnic Fractionalisation", 
+       title = "2011") + 
+  theme(panel.grid = element_blank(),
+        axis.text = element_blank(), 
+        plot.title = element_text(hjust = 0.5, size = 6), 
+        legend.title = element_text(size = 6), 
+        legend.key.size = unit(0.4, "cm"),  
+        legend.key.height = unit(0.3, "cm"), 
+        legend.key.width = unit(0.3, "cm"), 
+        legend.text = element_text(size = 5))
+
+png(file = "Dissertation Github/figures/Eurhhi11.png", 
+    width = 3000, height = 2000, res = 650)
+eur_hhi_plot_2011
+dev.off()
+
+eur_eth_frac_plots <- ggarrange(eur_hhi_plot_2001, eur_hhi_plot_2011, 
+                               nrow = 1, ncol = 2, 
+                               common.legend = TRUE, legend = "bottom", labels = 
+                                 "", 
+                               hjust = -0.45, 
+                               font.label = list(size = 5))
+
+png(file = "Dissertation Github/figures/EurEthFrac0111.png", 
+    width = 1500, height = 1000, res = 650)
+eur_eth_frac_plots
+dev.off()
+
 
 #Austria plots, 2001 and 2011
 
@@ -3032,6 +3102,20 @@ out <- interflex(Y = "soc_trst", D = "Eth_Frac_mc", X = "IRTscores_mc",
 out$figure
 
 unique(ess_complete_s$cntry)
+
+cronbach.alpha(!is.na(ess1_a_subset[, c("pplhlp", 
+                                        "pplfair", 
+                                        "ppltrst")]))
+cronbach.alpha(!is.na(ess7_a_subset[, c("pplhlp",
+                                        "pplfair", 
+                                        "ppltrst")]))
+
+mean(ess_complete_s$soc_trst, na.rm = TRUE)
+sd(ess_complete_s$soc_trst, na.rm = TRUE)
+
+range(ess_complete_s$IRTscores, na.rm = TRUE)
+mean(ess_complete_s$IRTscores, na.rm = TRUE)
+sd(ess_complete_s$IRTscores, na.rm = TRUE)
 
 
 
