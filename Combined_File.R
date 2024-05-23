@@ -21,6 +21,7 @@ library(stargazer)
 library(broom.mixed)
 library(htmltools)
 library(nloptr)
+library(interactions)
 
 
 #------------------------------Cleaning Census Data 2001------------------------
@@ -289,7 +290,8 @@ census_2001_controls <- census_2001_controls %>%
 #merge the census data and the controls by region code
 #but first rename columns 
 colnames(census_2001_controls) <- c("country", "reg_code", "reg", "avgeduyrs", 
-                                    "res_turn", "sin_par_hh", "unemp_rate")
+                                    "res_turn", "sin_par_hh", "unemp_rate", 
+                                    "area", "tot_pop", "pop_density")
 
 merged_census_2001 <- merge(census_full_1, census_2001_controls, by = "reg_code", 
                             all.x = TRUE)
@@ -566,7 +568,8 @@ census_2011_controls <- census_2011_controls %>%
 #merge the census data and the controls by region code
 #but first rename columns 
 colnames(census_2011_controls) <- c("country", "reg_code", "reg", "avgeduyrs", 
-                                    "res_turn", "sin_par_hh", "unemp_rate")
+                                    "res_turn", "sin_par_hh", "unemp_rate", 
+                                    "area", "tot_pop", "pop_density")
 
 merged_census_2011 <- merge(census_full_11, census_2011_controls, by = "reg_code", 
                             all.x = TRUE)
@@ -1957,7 +1960,7 @@ eur_shp_merged_cen1 <- merge(eur_shp, merged_census_2001, by = "reg_code")
 
 eur_shp_merged_cen1 <- eur_shp_merged_cen1[!(eur_shp_merged_cen1$CNTR_CODE %in%
                                                c("AT", "CZ", "NO", 
-                                                             "SE")), ]
+                                                             "SE", "FR")), ]
 
 #do the same for 2011 census data 
 #austria 
@@ -2027,7 +2030,7 @@ eur_shp_merged_cen11 <- merge(eur_shp, merged_census_2011, by = "reg_code")
 
 eur_shp_merged_cen11 <- eur_shp_merged_cen11[!(eur_shp_merged_cen11$CNTR_CODE %in%
                                                  c("AT", "CZ", "NO", 
-                                                   "SE")), ]
+                                                   "SE", "FR")), ]
 
 #overall Europe plots 2001 and 2011
 eur_hhi_plot_2001 <- ggplot() + 
@@ -2632,7 +2635,7 @@ ess1_final_subset <- ess1_final[, c("name", "essround", "edition", "proddate",
                                     "eduyrs", "hinctnt", "lvgptn", "imtcjob", 
                                     "imbleco", "imwbcnt", "imwbcrm", "dvrcdev", 
                                     "rlgdgr", "uemp5yr", "brncntr", 
-                                    "mig_att")]
+                                    "mig_att", "pop_density")]
 
 ess7_final_subset <- ess7_final[, c("name", "essround", "edition", "proddate", 
                                     "idno", "cntry", "reg_code", "dweight", 
@@ -2649,7 +2652,7 @@ ess7_final_subset <- ess7_final[, c("name", "essround", "edition", "proddate",
                                     "sin_par_hh", "unemp_rate", "domicil", 
                                     "eduyrs", "hinctnta", "icpart2", "imtcjob", 
                                     "imbleco", "imwbcnt", "imwbcrm", "dvrcdeva", 
-                                    "rlgdgr", "uemp5yr", "brncntr", "mig_att")]
+                                    "rlgdgr", "uemp5yr", "brncntr", "mig_att", "pop_density")]
 
 
 
@@ -2668,30 +2671,30 @@ summary(mnull)
 
 #icc = 0.82/3.7 = 0.22. > 0.1, so a hierarchical model makes sense. 
 
-#first, before running any actual models, mean centre all the controls that 
-#are continuous 
-
-ess_complete$Eth_Frac_mc <- scale(ess_complete$Eth_Frac, scale = FALSE)
-
-ess_complete$res_turn_mc <- scale(ess_complete$res_turn, scale = FALSE)
-
-ess_complete$sin_par_hh_mc <- scale(ess_complete$sin_par_hh, scale = FALSE)
-
-ess_complete$unemp_rate_mc <- scale(ess_complete$unemp_rate, scale = FALSE)
-
-ess_complete$eduyrs_mc <- scale(ess_complete$eduyrs, scale = FALSE)
-
-ess_complete$avgeduyrs_mc <- scale(ess_complete$avgeduyrs, scale = FALSE)
-
-ess_complete$IRTscores_mc <- scale(ess_complete$IRTscores, scale = FALSE)
-
-#given that base model to core model eliminates 4 countries: AT, CZ, NO, SE, 
+#given that base model to core model eliminates 5 countries: AT, CZ, NO, SE, FR 
 #try running a model with just the remaining 8 countries to see if the effect 
 #on eth frac is driven by smaller contextual units disappearing or if it's the 
 #adding of the controls 
 
 ess_complete_small <- ess_complete[!(ess_complete$cntry %in% c("AT", "CZ", "NO", 
-                                                             "SE")), ]
+                                                             "SE", "FR")), ]
+
+#first, before running any actual models, mean centre all the controls that 
+#are continuous 
+
+ess_complete_small$Eth_Frac_mc <- scale(ess_complete_small$Eth_Frac, scale = FALSE)
+
+ess_complete_small$res_turn_mc <- scale(ess_complete_small$res_turn, scale = FALSE)
+
+ess_complete_small$sin_par_hh_mc <- scale(ess_complete_small$sin_par_hh, scale = FALSE)
+
+ess_complete_small$unemp_rate_mc <- scale(ess_complete_small$unemp_rate, scale = FALSE)
+
+ess_complete_small$eduyrs_mc <- scale(ess_complete_small$eduyrs, scale = FALSE)
+
+ess_complete_small$avgeduyrs_mc <- scale(ess_complete_small$avgeduyrs, scale = FALSE)
+
+ess_complete_small$IRTscores_mc <- scale(ess_complete_small$IRTscores, scale = FALSE)
 
 #run a model without any controls, just ethnic fractionalisation on 
 #social trust 
@@ -2757,127 +2760,13 @@ cooks_distance <- cooks.distance(lm_model)
 plot(cooks_distance)
 influencePlot(cooks_distance)
 
-# Plot Cook's distance
-plot(cooks_distance, type = "h", main = "Cook's Distance", ylab = "Cook's Distance")
-abline(h = 4 / nrow(ess_complete_small), col = "red") 
-
-#create vector of outliers, exclude 
-outlier_indices <- c(24521, 26778, 28787, 30124, 37877)
-
-# Remove outliers
-ess_complete_small_no_outliers <- ess_complete_small[!rownames(ess_complete_small) %in% outlier_indices, ]
-
-# Refit the model without the outliers
-mcore_s_no_outliers <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
-                              avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                              crmvct + stflife + empl + gndr + agea + 
-                              ins_trst + lvgptn + (1 + Eth_Frac_mc | reg_code:cntry) + 
-                              (1 + Eth_Frac_mc || cntry), 
-                            data = ess_complete_small_no_outliers, 
-                            control = lmerControl(optimizer = "optimx", 
-                            optCtrl = list(method = "nlminb")))
-
-summary(mcore_s_no_outliers)
-
-#positive effect due to controls, but not statistically significant. use smaller 
-#dataset 
-
-
-#run a base model without controls, but interacting IRT with eth frac 
-
-mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
-                   (1 + Eth_Frac_mc|reg_code:cntry) + 
-                   (1 + Eth_Frac_mc||cntry), 
-                 data = ess_complete)
-summary(mbaseIRT)
-
-class(mbaseIRT) <- "lmerMod"
-
-
-mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + eduyrs_mc + 
-                   avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                   crmvct + stflife + empl + gndr + agea + 
-                   ins_trst + 
-                   lvgptn + (1 + Eth_Frac_mc|reg_code:cntry) + 
-                   (1 + Eth_Frac_mc||cntry), 
-                 data = ess_complete, 
-                 control = lmerControl(optimizer = "optimx", 
-                                       optCtrl = list(method = "nlminb")))
-summary(mcoreIRT)
-class(mcoreIRT) <- "lmerMod"
-
-vif(mcoreIRT)
-
-coef(mcoreIRT)
-
-ranef(mcoreIRT)
-
-
-#run the model for the full population controlling for immigration status. 
-#start with just controlling for whether the resp was born in the country 
-mborn <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
-                avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                crmvct + stflife + stfeco + empl + gndr + agea + 
-                ins_trst + 
-                lvgptn + brncntr +
-                (1 + Eth_Frac_mc|reg_code), 
-              data = ess_complete, 
-              control = lmerControl(optimizer = "optimx", 
-                                    optCtrl = list(method = "nlminb")))
-summary(mborn)
-
-class(mborn) <- "lmerMod"
-
-
-#now run a model with more detailed immigration status of respondents
-mimmstat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
-                   avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                   crmvct + stflife + stfeco + empl + gndr + agea + 
-                   ins_trst + 
-                   lvgptn + secgen + nat10 + natless10 + 
-                   nonctz10 + nonctzless10 + native + 
-                   (1 + Eth_Frac_mc|reg_code), 
-                 data = ess_complete, 
-                 control = lmerControl(optimizer = "optimx", 
-                                       optCtrl = list(method = "nlminb")))
-
-summary(mimmstat)
-
-class(mimmstat) <- "lmerMod"
-
-#re run the immigrant status also controlling for whether they are a member of 
-# a minority ethnic group 
-mimmstatmin <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores + essround + hinctnt + eduyrs_mc + 
-                      avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
-                      crmvct + stflife + stfeco + empl + gndr + agea + 
-                      ins_trst + 
-                      lvgptn + secgen + nat10 + natless10 + 
-                      nonctz10 + nonctzless10 + native + blgetmg +
-                      (1 + Eth_Frac_mc|reg_code), 
-                    data = ess_complete, 
-                    control = lmerControl(optimizer = "optimx", 
-                                          optCtrl = list(method = "nlminb")))
-
-summary(mimmstatmin)
-
-class(mimmstatmin) <- "lmerMod"
-
-#load interflex
-library(interflex)
-
-
-
-
-#stargazer for mbase, mcore, mcore IRT
-
-stargazer(mbase, mcore, mcoreIRT, title="Results", align=TRUE)
-
-stargazer(mborn, mimmstat, mimmstatmin, title = "", align = TRUE)
-
 #-----------------------------Models--------------------------------------------
 library(minqa)
 #create new dataset with the smaller dataset without outliers
-ess_complete_s <- ess_complete_small_no_outliers
+ess_complete_s <- ess_complete_small
+
+ess_complete_s$pop_density <- as.numeric(ess_complete_s$pop_density)
+ess_complete_s$pop_density_mc <- scale(ess_complete_s$pop_density, scale = F)
 
 #run a null model 
 mnull <- lmer(soc_trst ~ 1 + (1|reg_code:cntry) + (1|cntry), 
@@ -2899,31 +2788,38 @@ summary(mbasevar)
 class(mbasevar) <- "lmerMod"
 
 #run core model with controls, but without IRT
+#control for population density 
+
 mcore <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                 crmvct + stflife + empl + gndr + agea + 
-                ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                ins_trst + lvgptn + pop_density_mc + (1 | reg_code:cntry) + 
                 (1 | cntry), 
               data = ess_complete_s, 
               control = lmerControl(optimizer = "bobyqa", 
                                     optCtrl = list()))
 
 summary(mcore)
-class(mcore) <- "lmerMod"
-vif(mcore)
 
 #run core model varying eth het by region 
+#control for population density 
 mcorevar <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                 crmvct + stflife + empl + gndr + agea + 
-                ins_trst + lvgptn + (1 + Eth_Frac_mc | reg_code:cntry) + 
+                ins_trst + lvgptn + pop_density_mc + 
+                  (1 + Eth_Frac_mc | reg_code:cntry) + 
                 (1 | cntry), 
               data = ess_complete_s, 
               control = lmerControl(optimizer = "bobyqa", 
                                     optCtrl = list()))
 
+
+
+
 summary(mcorevar)
 class(mcorevar) <- "lmerMod"
+
+
 
 #run base model without controls and with IRT 
 mbaseIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
@@ -2944,23 +2840,28 @@ summary(mbaseIRTvar)
 class(mbaseIRTvar) <- "lmerMod"
 
 
+
+
 #run core model with controls and IRT
+#controlling for population density 
 mcoreIRT <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
                    eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
                    unemp_rate_mc + crmvct + stflife + empl + gndr + agea + 
-                   ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                   ins_trst + lvgptn + pop_density_mc + (1 | reg_code:cntry) + 
                    (1|cntry), 
-              data = ess_complete_s, 
-              control = lmerControl(optimizer = "bobyqa", 
-                                    optCtrl = list()))
+                 data = ess_complete_s, 
+                 control = lmerControl(optimizer = "bobyqa", 
+                                       optCtrl = list()))
 summary(mcoreIRT)
 class(mcoreIRT) <- "lmerMod"
+
 
 #run core IRT model varying eth het by region 
 mcoreIRTvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
                    eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
                    unemp_rate_mc + crmvct + stflife + empl + gndr + agea + 
-                   ins_trst + lvgptn + (1 + Eth_Frac_mc | reg_code:cntry) + 
+                   ins_trst + lvgptn + pop_density_mc + 
+                     (1 + Eth_Frac_mc | reg_code:cntry) + 
                    (1|cntry), 
                  data = ess_complete_s, 
                  control = lmerControl(optimizer = "bobyqa", 
@@ -2968,11 +2869,25 @@ mcoreIRTvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
 summary(mcoreIRTvar)
 class(mcoreIRTvar) <- "lmerMod"
 
+mcore1plot <- johnson_neyman(mcoreIRTvar, pred = "Eth_Frac_mc", modx = "IRTscores_mc", 
+               sig.color = "black", insig.color = "grey",
+               alpha = .05, title = "Conditional Effect of Ethnic Fractionalisation on Social Trust") 
+
+class(mcore1plot)
+
+png(file = "Dissertation Github/figures/J-Nplotcore1.png", 
+    width = 6000, height = 4000, res = 650)
+mcore1plot
+dev.off()
+
+ranef(mcoreIRTvar)
+
 #control for perceived negative consequences of immigration 
 mIRTattim <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
                     eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
                     unemp_rate_mc + crmvct + stflife + empl + gndr + agea + mig_att + 
-                    ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                    ins_trst + lvgptn + pop_density_mc + 
+                    (1 | reg_code:cntry) + 
                     (1|cntry), 
                   data = ess_complete_s, 
                   control = lmerControl(optimizer = "bobyqa", 
@@ -2981,17 +2896,33 @@ summary(mIRTattim) #magnitude of interaction decreases slightly and effect of
 #eth het more positive but still not statistically significant. 
 class(mIRTattim) <- "lmerMod"
 
+
+
 #run controlled IRT varying eth het by region 
 mIRTattimvar <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
                     eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
                     unemp_rate_mc + crmvct + stflife + empl + gndr + agea + mig_att + 
-                    ins_trst + lvgptn + (1 + Eth_Frac_mc | reg_code:cntry) + 
+                    ins_trst + lvgptn + pop_density_mc + 
+                      (1 + Eth_Frac_mc | reg_code:cntry) + 
                     (1|cntry), 
                   data = ess_complete_s, 
-                  control = lmerControl(optimizer = "bobyqa", 
+                  control = lmerControl(optimizer = "Nelder_Mead", 
                                         optCtrl = list()))
+
+glmm_all = allFit(mIRTattimvar)
 summary(mIRTattimvar)
+
 class(mIRTattimvar) <- "lmerMod"
+
+mattim1plot <- johnson_neyman(mIRTattimvar, pred = "Eth_Frac_mc", modx = "IRTscores_mc", sig.color = "black",
+                              insig.color = "grey", alpha = .05, 
+                              title = "Conditional Effect After Controlling for Anti-Immigrant Attitudes")
+
+png(file = "Dissertation Github/figures/J-Nplotattim1.png", 
+    width = 6000, height = 4000, res = 650)
+mattim1plot
+dev.off()
+
 
 #restrict sample to only natives 
 ess_complete_native <- ess_complete_s[ess_complete_s$native == "Yes", ]
@@ -3007,7 +2938,7 @@ class(mbasenat) <- "lmerMod"
 mcorenat <- lmer(soc_trst ~ Eth_Frac_mc + essround + hinctnt + eduyrs_mc + 
                 avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + unemp_rate_mc + 
                 crmvct + stflife + empl + gndr + agea + 
-                ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                ins_trst + lvgptn + pop_density_mc + (1 + Eth_Frac_mc | reg_code:cntry) + 
                 (1 | cntry), 
               data = ess_complete_native, 
               control = lmerControl(optimizer = "optimx", 
@@ -3019,7 +2950,7 @@ vif(mcorenat)
 
 #rerun base model with IRT
 mbaseIRTnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + 
-                   (1 | reg_code:cntry) +
+                   (1 + Eth_Frac_mc | reg_code:cntry) +
                    (1 | cntry), data = ess_complete_native, 
                  control = lmerControl(optimizer = "optimx", 
                                        optCtrl = list(method = "nlminb")))
@@ -3031,7 +2962,8 @@ class(mbaseIRTnat) <- "lmerMod"
 mcoreIRTnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
                       eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
                       unemp_rate_mc + crmvct + stflife + empl + gndr + agea + 
-                      ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                      ins_trst + lvgptn + pop_density_mc + 
+                      (1 + Eth_Frac_mc | reg_code:cntry) + 
                       (1|cntry), 
                     data = ess_complete_native, 
                     control = lmerControl(optimizer = "optimx", 
@@ -3039,11 +2971,23 @@ mcoreIRTnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
 summary(mcoreIRTnat) 
 class(mcoreIRTnat) <- "lmerMod"
 
+mcore2plot <- johnson_neyman(mcoreIRTnat, pred = "Eth_Frac_mc", 
+                             modx = "IRTscores_mc", sig.color = "black", 
+                             insig.color = "grey",
+                             alpha = .05, 
+                             title = "Conditional Effect of Ethnic Fractionalisation in Native Population")
+
+png(file = "Dissertation Github/figures/J-Nplotcore2.png", 
+    width = 6000, height = 4000, res = 650)
+mcore2plot
+dev.off()
+
 #control for attitudes towards immigration 
 mIRTattimnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt + 
                     eduyrs_mc + avgeduyrs_mc + res_turn_mc + sin_par_hh_mc + 
                     unemp_rate_mc + crmvct + stflife + empl + gndr + agea + mig_att + 
-                    ins_trst + lvgptn + (1 | reg_code:cntry) + 
+                    ins_trst + lvgptn + pop_density_mc + 
+                      (1 + Eth_Frac_mc | reg_code:cntry) + 
                     (1|cntry), 
                   data = ess_complete_native, 
                   control = lmerControl(optimizer = "optimx", 
@@ -3051,7 +2995,17 @@ mIRTattimnat <- lmer(soc_trst ~ Eth_Frac_mc*IRTscores_mc + essround + hinctnt +
 summary(mIRTattimnat)
 class(mIRTattimnat) <- "lmerMod"
 
+mattim2plot <- johnson_neyman(mIRTattimnat, pred = "Eth_Frac_mc", 
+                              modx = "IRTscores_mc", sig.color = "black", 
+                              insig.color = "grey",
+                              alpha = .05, 
+                              title = "Conditional Effect of Ethnic Fractionalisation in Native Population")
 
+
+png(file = "Dissertation Github/figures/J-Nplotattim2.png", 
+    width = 6000, height = 4000, res = 650)
+mattim2plot
+dev.off()
 
 #-----------------using interflex to model the interaction----------------------
 #full model IRT  
