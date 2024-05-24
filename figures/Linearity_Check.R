@@ -2973,7 +2973,7 @@ controls1 <- c("hinctnt", "eduyrs", "avgeduyrs", "res_turn",
                "lvgptn", "pop_density")
 
 FE1 <- c("essround",
-         "reg_code")
+         "reg_code", "cntry")
 
 sapply(ess_complete_s[controls1], class)
 ess_complete_s$hinctnt <- as.factor(ess_complete_s$hinctnt)
@@ -2984,24 +2984,30 @@ ess_complete_s$lvgptn <- as.factor(ess_complete_s$lvgptn)
 
 
 
-interflex(estimator = "raw", Y = "soc_trst", D = "Eth_Frac", 
-          X = "IRTscores_mc", Z = controls1, FE = FE1, data = ess_complete_s, 
+out <- interflex(estimator = "raw", Y = "soc_trst", D = "Eth_Frac", 
+          X = "IRTscores", Z = controls1, FE = FE1, data = ess_complete_s, 
           Ylabel = "Trust", Dlabel = "Ethnic Heterogeneity", 
           Xlabel="Preference for Homogeneity", 
           theme.bw = TRUE, show.grid = FALSE, ncols=3, na.rm = TRUE)
+class(out)
+
+png(file = "Dissertation Github/figures/Linearity_Check.png", 
+    width = 6000, height = 4000, res = 650)
+out
+dev.off()
 
 
-out <- interflex(Y = "soc_trst", D = "Eth_Frac_mc", X = "IRTscores_mc", 
+out <- interflex(Y = "soc_trst", D = "Eth_Frac", X = "IRTscores", 
                  Z = controls1, FE = FE1, data = ess_complete_s, 
                  estimator = "binning", cutoff = c(1, 2, 4, 5), 
                  theme.bw = TRUE, na.rm = TRUE)
 
 
-out$figure
+class(out$figure) 
 
 out <- interflex(Y = "soc_trst", D = "Eth_Frac_mc", X = "IRTscores_mc", 
                  Z = controls1, FE = FE1, data = ess_complete_s, 
-                 estimator = "binning", Xdistr = "density", bin.labs = FALSE, 
+                 estimator = "raw", Xdistr = "density", bin.labs = FALSE, 
                  na.rm = TRUE, theme.bw = TRUE, show.grid = FALSE)
 out$figure
 
@@ -3023,7 +3029,11 @@ cronbach.alpha(!is.na(ess7_a_subset[, c("pplhlp",
                                         "ppltrst")]))
 
 mean(ess_complete_s$soc_trst, na.rm = TRUE)
+median(ess_complete_s$soc_trst, na.rm = TRUE)
 sd(ess_complete_s$soc_trst, na.rm = TRUE)
+iqr(ess_complete_s$soc_trst, na.rm = TRUE)
+ess_trst <- subset(ess_complete_s, is.na(soc_trst))
+
 
 range(ess_complete_s$IRTscores, na.rm = TRUE)
 mean(ess_complete_s$IRTscores, na.rm = TRUE)
@@ -3034,11 +3044,115 @@ min(as.numeric(census_2001_controls$area), na.rm = TRUE)
 mean(as.numeric(census_2001_controls$area), na.rm = TRUE)
 
 mean(ess_complete_s$Eth_Frac, na.rm = TRUE)
+median(ess_complete_s$Eth_Frac, na.rm = TRUE)
+sd(ess_complete_s$Eth_Frac, na.rm = TRUE)
 range(ess_complete_s$Eth_Frac, na.rm = TRUE)
+iqr(ess_complete_s$Eth_Frac, na.rm = TRUE)
 
+ess_ethfrac <- subset(ess_complete_s, is.na(Eth_Frac))
+
+mean(ess_complete_s$IRTscores, na.rm = TRUE)
+median(ess_complete_s$IRTscores, na.rm = TRUE)
+sd(ess_complete_s$IRTscores, na.rm = TRUE)
+range(ess_complete_s$IRTscores, na.rm = TRUE)
+iqr(ess_complete_s$IRTscores, na.rm = TRUE)
+
+essirt <- subset(ess_complete_s, is.na(IRTscores))
+
+mean(ess_complete_s$mig_att, na.rm = TRUE)
+median(ess_complete_s$mig_att, na.rm = TRUE)
+sd(ess_complete_s$mig_att, na.rm = TRUE)
+range(ess_complete_s$mig_att, na.rm = TRUE)
+iqr(ess_complete_s$mig_att, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, is.na(mig_att))
 
 check <- subset(ess_complete_s, Eth_Frac > 0.1)
 nrow(ess_complete_s[ess_complete_s$Eth_Frac > 0.1, ])
 
 unique(check$reg_code)
+
+mean(ess_complete_s$eduyrs, na.rm = TRUE)
+median(ess_complete_s$eduyrs, na.rm = TRUE)
+sd(ess_complete_s$eduyrs, na.rm = TRUE)
+range(ess_complete_s$eduyrs, na.rm = TRUE)
+iqr(ess_complete_s$eduyrs, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, is.na(eduyrs))
+
+
+mean(ess_complete_s$stflife, na.rm = TRUE)
+median(ess_complete_s$stflife, na.rm = TRUE)
+sd(ess_complete_s$stflife, na.rm = TRUE)
+range(ess_complete_s$stflife, na.rm = TRUE)
+iqr(ess_complete_s$stflife, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, is.na(stflife))
+
+mean(ess_complete_s$agea, na.rm = TRUE)
+median(ess_complete_s$agea, na.rm = TRUE)
+sd(ess_complete_s$agea, na.rm = TRUE)
+range(ess_complete_s$agea, na.rm = TRUE)
+iqr(ess_complete_s$agea, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, is.na(agea))
+
+mean(ess_complete_s$ins_trst, na.rm = TRUE)
+median(ess_complete_s$ins_trst, na.rm = TRUE)
+sd(ess_complete_s$ins_trst, na.rm = TRUE)
+range(ess_complete_s$ins_trst, na.rm = TRUE)
+iqr(ess_complete_s$ins_trst, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, is.na(ins_trst))
+
+mean(ess_complete_s$avgeduyrs, na.rm = TRUE)
+median(ess_complete_s$avgeduyrs, na.rm = TRUE)
+sd(ess_complete_s$avgeduyrs, na.rm = TRUE)
+range(ess_complete_s$avgeduyrs, na.rm = TRUE)
+iqr(ess_complete_s$avgeduyrs, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, is.na(avgeduyrs))
+
+mean(ess_complete_s$res_turn, na.rm = TRUE)
+median(ess_complete_s$res_turn, na.rm = TRUE)
+sd(ess_complete_s$res_turn, na.rm = TRUE)
+range(ess_complete_s$res_turn, na.rm = TRUE)
+iqr(ess_complete_s$res_turn, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, !is.na(res_turn))
+
+
+mean(ess_complete_s$sin_par_hh, na.rm = TRUE)
+median(ess_complete_s$sin_par_hh, na.rm = TRUE)
+sd(ess_complete_s$sin_par_hh, na.rm = TRUE)
+range(ess_complete_s$sin_par_hh, na.rm = TRUE)
+iqr(ess_complete_s$sin_par_hh, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, !is.na(sin_par_hh))
+
+mean(ess_complete_s$unemp_rate, na.rm = TRUE)
+median(ess_complete_s$unemp_rate, na.rm = TRUE)
+sd(ess_complete_s$unemp_rate, na.rm = TRUE)
+range(ess_complete_s$unemp_rate, na.rm = TRUE)
+iqr(ess_complete_s$unemp_rate, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, is.na(unemp_rate))
+
+mean(ess_complete_s$pop_density, na.rm = TRUE)
+median(ess_complete_s$pop_density, na.rm = TRUE)
+sd(ess_complete_s$pop_density, na.rm = TRUE)
+range(ess_complete_s$pop_density, na.rm = TRUE)
+iqr(ess_complete_s$pop_density, na.rm = TRUE)
+essmigatt <- subset(ess_complete_s, !is.na(pop_density))
+
+table(ess_complete_s$crmvct)
+essmigatt <- subset(ess_complete_s, is.na(crmvct))
+
+table(ess_complete_s$empl)
+essmigatt <- subset(ess_complete_s, is.na(empl))
+prop.table(table(ess_complete_s$empl))
+
+
+table(ess_complete_s$gndr)
+essmigatt <- subset(ess_complete_s, is.na(gndr))
+prop.table(table(ess_complete_s$gndr))
+
+
+table(ess_complete_s$lvgptn)
+essmigatt <- subset(ess_complete_s, is.na(lvgptn))
+prop.table(table(ess_complete_s$lvgptn))
+
+
+
 
